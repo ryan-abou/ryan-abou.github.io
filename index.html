@@ -119,12 +119,16 @@ img { display: block; max-width: 100%; }
 @media (min-width: 900px) { .hero-copy { padding-block: 10rem 16rem; } }
 .hero h1 { font-weight: 700; font-size: clamp(3.2rem, 11vw, 9.5rem); letter-spacing: -0.045em; line-height: .9; }
 .hero h1 .line { display: block; }
-.hero h1 .line + .line { font-weight: 250; color: #b4bec9; letter-spacing: -0.035em; }
+.hero h1 .line + .line { color: #a3aeba; }
 /* Each letter is a key: the melody below lights them in right-hand blue, one note at a time. */
 .ch { transition: color .8s ease, text-shadow .8s ease; }
 .ch.lit { color: var(--rh); text-shadow: 0 0 30px rgba(102,173,242,.55); transition: color .05s, text-shadow .05s; }
 .ch.lit-lh { color: var(--lh); text-shadow: 0 0 30px rgba(232,184,109,.5); transition: color .05s, text-shadow .05s; }
-.hero h1 .ch:hover { color: var(--rh); transition: color .05s; }
+.hero h1 .ch:hover { color: var(--rh); text-shadow: 0 0 30px rgba(102,173,242,.55); transition: color .05s, text-shadow .05s; }
+/* Let clicks reach the keyboard behind the copy; the copy's own children stay interactive. */
+.hero-copy { pointer-events: none; }
+.hero-copy > * { pointer-events: auto; }
+.hero-stage canvas { touch-action: pan-y; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
@@ -179,7 +183,7 @@ html.lenis, html.lenis body { height: auto; }
 .facts dd small { font-weight: 300; font-size: .82rem; color: var(--muted); display: block; margin-top: .3rem; letter-spacing: 0; }
 
 /* Build history */
-.history-pin { padding-block: 5.5rem 3rem; display: grid; gap: 1.6rem; }
+.history-pin { padding-block: 4.5rem 1.5rem; display: grid; gap: 1.4rem; }
 .history-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 2rem; }
 .history-head h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 700; letter-spacing: -0.035em; max-width: 16ch; }
 .counter { font-family: var(--mono); font-size: .8rem; color: var(--muted); }
@@ -198,7 +202,7 @@ html.lenis, html.lenis body { height: auto; }
 
 .motion .history-body { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
 @media (min-width: 900px) { .motion .history-body { grid-template-columns: 12.5rem minmax(0, 1fr); gap: 3rem; } }
-.motion .frames { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; width: min(100%, calc((100svh - 17rem) * 1.7778)); }
+.motion .frames { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; width: min(100%, calc((100svh - 26rem) * 1.7778)); }
 .motion .frames li { grid-area: 1 / 1; background: var(--bg); }
 .motion .frames figcaption { grid-template-columns: auto 1fr; column-gap: 1rem; align-items: baseline; }
 .motion .frames .what { grid-column: 1 / -1; }
@@ -234,7 +238,9 @@ html.lenis, html.lenis body { height: auto; }
 .motion .octave .played { animation: wrongkey 2.6s ease-in-out infinite; }
 .motion .octave .falling { animation: slabfall 2.6s linear infinite; }
 @keyframes wrongkey { 0%, 40% { fill: #ece8e1; } 44%, 52% { fill: var(--wrong); } 60%, 84% { fill: #d9a29a; } 90%, 100% { fill: #ece8e1; } }
-@keyframes slabfall { 0% { transform: translateY(-62px); } 44% { transform: translateY(0); } 100% { transform: translateY(0); } }
+@keyframes slabfall { 0% { transform: translateY(-70px); } 44% { transform: translateY(0); } 100% { transform: translateY(89px); } }
+.motion .octave .wantkey { animation: wantkey 2.6s linear infinite; }
+@keyframes wantkey { 0%, 43% { fill: #15171b; } 44%, 72% { fill: var(--rh); } 74%, 100% { fill: #15171b; } }
 .verdict { display: flex; justify-content: center; gap: 1.25rem; font-size: .9rem; font-weight: 500; }
 .verdict .p { color: var(--wrong); }
 .verdict .w { color: var(--rh); }
@@ -276,9 +282,15 @@ html.lenis, html.lenis body { height: auto; }
 .tempo { display: grid; gap: .5rem; }
 .tempo-top { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); }
 .tempo-top b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
-.tempo-row { display: flex; align-items: center; gap: .6rem; }
+.tempo-row { display: flex; align-items: flex-start; gap: .6rem; }
+.tempo-row .step { margin-top: 1px; }
 .tempo-row .step { flex: none; padding: .3rem .7rem; font-size: .78rem; }
-.tempo-ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .62rem; color: var(--faint); padding-inline: 5.6rem; }
+.range-wrap { flex: 1; min-width: 0; display: grid; }
+.range-wrap input[type="range"] { width: 100%; }
+.tempo-ends { position: relative; height: 1rem; font-family: var(--mono); font-size: .62rem; color: var(--faint); }
+.tempo-ends span { position: absolute; top: 0; transform: translateX(-50%); }
+.tempo-ends span:first-child { left: 10px; }
+.tempo-ends span:last-child { left: calc(100% - 10px); }
 @media (max-width: 420px) { .tempo-ends { display: none; } }
 input[type="range"] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 28px; background: transparent; cursor: pointer; --p: 42.857%; }
 input[type="range"]:focus-visible { outline: 2px solid var(--rh); outline-offset: 2px; border-radius: 8px; }
@@ -350,7 +362,7 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 /* Footer */
 footer { padding-block: clamp(5rem, 10vw, 8rem) 3rem; display: grid; gap: 2rem; }
 footer .sign { font-weight: 700; font-size: clamp(2.8rem, 9.5vw, 7.8rem); letter-spacing: -0.045em; line-height: .9; }
-footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
+footer .sign span { display: block; color: #6f7a87; }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: .76rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1.25rem; }
 .foot-row a { color: var(--ink); text-decoration: none; }
 
@@ -397,7 +409,7 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
         <span class="sub">Mixed reality · Meta Quest 3</span>
         <h2 id="pg-title">PianoGlass</h2>
         <p>You sit at a real piano and the headset shows notes falling onto your real keys. The keyboard plugs into the headset over USB MIDI, so the app knows exactly which key you pressed and when, and can judge every note.</p>
-        <p>Every menu is <b>Liquid Glass</b>, set in Outfit. The glass panels, colours and type on this page come straight from the app's code.</p>
+        <p>Every menu is <b>Liquid Glass</b>, set in Outfit. The glass panels, colors and type on this page come straight from the app's code.</p>
         <div class="hero-actions"><a class="pill" href="https://github.com/ryan-abou/pianoglass">Code on GitHub</a></div>
       </div>
       <figure class="headset glass">
@@ -416,20 +428,20 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
       <div class="history-head">
         <div style="display:grid;gap:.9rem">
           <span class="eyebrow">Build history</span>
-          <h2 id="hist-title">From a grey box to a real piano</h2>
+          <h2 id="hist-title">From a gray box to a real piano</h2>
         </div>
         <p class="counter" aria-hidden="true"><b id="commit-n">5</b>commits so far</p>
       </div>
       <div class="history-body">
         <ol class="rail" id="rail" aria-hidden="true"></ol>
         <ol class="frames" id="frames">
-          <li data-date="Sep 8" data-commits="5"><figure><div class="shot"><img src="img/f0.jpg" alt="An empty grey virtual room with a single box." width="1440" height="810"></div><figcaption><time datetime="2026-09-08">Sep 8</time><span class="commits">5 commits</span><span class="what">A key press on a real keyboard reaches the headset over USB MIDI. Nothing to look at yet.</span></figcaption></figure></li>
+          <li data-date="Sep 8" data-commits="5"><figure><div class="shot"><img src="img/f0.jpg" alt="An empty gray virtual room with a single box." width="1440" height="810"></div><figcaption><time datetime="2026-09-08">Sep 8</time><span class="commits">5 commits</span><span class="what">A key press on a real keyboard reaches the headset over USB MIDI. Nothing to look at yet.</span></figcaption></figure></li>
           <li data-date="Sep 14" data-commits="9"><figure><div class="shot"><img src="img/f1.jpg" alt="A flat virtual keyboard with notes falling onto it." width="1440" height="810"></div><figcaption><time datetime="2026-09-14">Sep 14</time><span class="commits">9 commits</span><span class="what">First playable song, on a virtual keyboard.</span></figcaption></figure></li>
           <li data-date="Oct 15" data-commits="21"><figure><div class="shot"><img src="img/f2.jpg" alt="Passthrough view of a real piano with notes falling onto it and calibration numbers above." width="1440" height="810"></div><figcaption><time datetime="2026-10-15">Oct 15</time><span class="commits">21 commits</span><span class="what">Passthrough on. Calibrated keys line up with the real piano.</span></figcaption></figure></li>
           <li data-date="Nov 3" data-commits="122"><figure><div class="shot"><img src="img/f3.jpg" alt="Note highway grid over the real keys with the key being played lit." width="1440" height="810"></div><figcaption><time datetime="2026-11-03">Nov 3</time><span class="commits">122 commits</span><span class="what">The note highway and its grid, with every note judged as you play it.</span></figcaption></figure></li>
           <li data-date="Nov 5" data-commits="204"><figure><div class="shot"><img src="img/f4.jpg" alt="A hand on the real keys under a falling note, with a glass panel above." width="1440" height="810"></div><figcaption><time datetime="2026-11-05">Nov 5</time><span class="commits">204 commits</span><span class="what">Live score and a metronome while you play.</span></figcaption></figure></li>
           <li data-date="Nov 7" data-commits="225"><figure><div class="shot"><img src="img/f5.jpg" alt="Notes falling onto real keys with a panel showing 100 percent of keys right." width="1440" height="810"></div><figcaption><time datetime="2026-11-07">Nov 7</time><span class="commits">225 commits</span><span class="what">Memory fade: the notes fade out as you learn the song.</span></figcaption></figure></li>
-          <li data-date="Nov 14" data-commits="338"><figure><div class="shot"><img src="img/f6.jpg" alt="Through the Quest 3 lens: sand-outlined left-hand notes and blue right-hand notes on a white grid over a real piano." width="1440" height="810"></div><figcaption><time datetime="2026-11-14">Nov 14</time><span class="commits">338 commits</span><span class="what">On Quest 3 in true colour: left hand sand, right hand blue, note names on every note.</span></figcaption></figure></li>
+          <li data-date="Nov 14" data-commits="338"><figure><div class="shot"><img src="img/f6.jpg" alt="Through the Quest 3 lens: sand-outlined left-hand notes and blue right-hand notes on a white grid over a real piano." width="1440" height="810"></div><figcaption><time datetime="2026-11-14">Nov 14</time><span class="commits">338 commits</span><span class="what">On Quest 3 in true color: left hand sand, right hand blue, note names on every note.</span></figcaption></figure></li>
         </ol>
       </div>
       <p class="history-note">Sep 14 to Nov 7 were recorded on a Quest 2, and the blue tint was a passthrough bug fixed later. Nov 14 is filmed through the Quest 3 lens with a phone. Now at 515 commits.</p>
@@ -456,7 +468,7 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
             <rect class="w" x="200" y="0" width="40" height="120" rx="3"/>
             <rect class="w" x="240" y="0" width="40" height="120" rx="3"/>
             <rect class="b" x="27" y="0" width="26" height="74" rx="2"/>
-            <rect class="b" x="67" y="0" width="26" height="74" rx="2"/>
+            <rect class="b wantkey" x="67" y="0" width="26" height="74" rx="2"/>
             <rect class="b" x="147" y="0" width="26" height="74" rx="2"/>
             <rect class="b" x="187" y="0" width="26" height="74" rx="2"/>
             <rect class="b" x="227" y="0" width="26" height="74" rx="2"/>
@@ -479,9 +491,9 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
       </article>
       <article class="card glass">
         <h3>Results by bar</h3>
-        <p>After each try, the results card colours one box per bar by its worst accuracy, then suggests what to practise and loops it for you.</p>
+        <p>After each try, the results card colors one box per bar by its worst accuracy, then suggests what to practice and loops it for you.</p>
         <div class="demo">
-          <div class="barrow" id="barrow" aria-label="Example results: bars 1 to 12, bar 9 in the lowest colour." role="img"><i class="b95">1</i><i class="b95">2</i><i class="b90">3</i><i class="b85">4</i><i class="b95">5</i><i class="b95">6</i><i class="b90">7</i><i class="b90">8</i><i class="blow">9</i><i class="b75">10</i><i class="b95">11</i><i class="b95">12</i></div>
+          <div class="barrow" id="barrow" aria-label="Example results: bars 1 to 12, bar 9 in the lowest color." role="img"><i class="b95">1</i><i class="b95">2</i><i class="b90">3</i><i class="b85">4</i><i class="b95">5</i><i class="b95">6</i><i class="b90">7</i><i class="b90">8</i><i class="blow">9</i><i class="b75">10</i><i class="b95">11</i><i class="b95">12</i></div>
           <div class="suggest"><span>Bar 9 needs work</span><span class="loop">Loop bar 9</span></div>
           <div class="legend"><span><i class="b95"></i>95%+</span><span><i class="b90"></i>90</span><span><i class="b85"></i>85</span><span><i class="b75"></i>75</span><span><i class="blow"></i>below 75</span></div>
         </div>
@@ -499,10 +511,12 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
             <div class="tempo-top"><label for="tempo">Tempo</label><b id="tempo-v">Tempo 100%</b></div>
             <div class="tempo-row">
               <button type="button" class="chip step" id="tempo-down" aria-label="Tempo minus 5%">Tempo −</button>
-              <input type="range" id="tempo" min="25" max="200" step="5" value="100" aria-valuetext="Tempo 100%">
+              <div class="range-wrap">
+                <input type="range" id="tempo" min="25" max="200" step="5" value="100" aria-valuetext="Tempo 100%">
+                <div class="tempo-ends" aria-hidden="true"><span>25%</span><span>200%</span></div>
+              </div>
               <button type="button" class="chip step" id="tempo-up" aria-label="Tempo plus 5%">Tempo +</button>
             </div>
-            <div class="tempo-ends" aria-hidden="true"><span>25%</span><span>200%</span></div>
           </div>
           <div class="chips" role="group" aria-label="Practice options">
             <button type="button" class="chip" data-opt="Metronome" aria-pressed="false">Metronome</button>
@@ -712,13 +726,16 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
       ctx.fillStyle = 'rgba(5,5,8,0.95)'; ctx.fillRect(0, hitY - 4, W, 5);
       // keys light in their note's hand colour while it plays
       for (var q in keyX) { var key = keyX[q]; if (key.b) continue;
-        var col = now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.white;
+        var pc = hero.pressColor && hero.pressColor(q);
+        var col = pc ? pc.col : now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.white;
         ctx.fillStyle = col; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill();
-        if (now[q] && onset[q] < 0.15) { ctx.fillStyle = 'rgba(255,255,255,' + (0.35 * (1 - onset[q] / 0.15)) + ')'; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill(); }
+        if (pc && pc.age < 0.15) { ctx.fillStyle = 'rgba(255,255,255,' + (0.35 * (1 - pc.age / 0.15)) + ')'; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill(); }
+        else if (!pc && now[q] && onset[q] < 0.15) { ctx.fillStyle = 'rgba(255,255,255,' + (0.35 * (1 - onset[q] / 0.15)) + ')'; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill(); }
         ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(key.x + 1, hitY + keyH - 10, key.w - 2, 7);
       }
       for (q in keyX) { key = keyX[q]; if (!key.b) continue;
-        ctx.fillStyle = now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.black; rr(key.x, hitY + 1, key.w, keyH * 0.62, 3); ctx.fill();
+        var pb = hero.pressColor && hero.pressColor(q);
+        ctx.fillStyle = pb ? pb.col : now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.black; rr(key.x, hitY + 1, key.w, keyH * 0.62, 3); ctx.fill();
         ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.fillRect(key.x + 2, hitY + keyH * 0.62 - 6, key.w - 4, 2);
       }
       // status strip: the last right-hand note, judged with the app's windows and colours
@@ -731,15 +748,9 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
           var j = a2 <= 40 ? ['Perfect', 'var(--j-perfect)'] : a2 <= 80 ? ['Great', 'var(--j-great)'] : a2 <= 150 ? ['Good', 'var(--j-good)'] : ['Miss', 'var(--j-miss)'];
           stJ.textContent = j[0]; stJ.style.color = j[1]; stN.textContent = NAMES[notes[latest].m % 12];
           stMs.textContent = (o > 0 ? '+' : o < 0 ? '−' : '') + a2 + ' ms';
-          if (hero.onNote) hero.onNote('r');
         }
       }
-      // left-hand notes light a letter in sand as they start
-      for (i = mel.length; i < notes.length; i++) {
-        var s1 = notes[i].s;
-        if (lastT >= 0 && (t >= lastT ? (s1 > lastT && s1 <= t) : (s1 > lastT || s1 <= t)) && hero.onNote) hero.onNote('l');
-      }
-      lastT = t;
+
     }
     layout();
     var t = 0.6, prev = null, visible = true, raf = 0;
@@ -751,12 +762,41 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
     hero.start = function () { if (hero.running || !motionOn || !visible || document.hidden) return; hero.running = true; prev = null; raf = requestAnimationFrame(frame); };
     hero.stop = function () { hero.running = false; cancelAnimationFrame(raf); };
     hero.drawStatic = function () { lastT = -1; draw(t); };
-    // Your name plays along: right-hand notes light the next letter blue, left-hand notes sand.
-    var chars = document.querySelectorAll('#name .ch'), ci = 0;
-    hero.onNote = function (hand) {
-      if (!motionOn || !hero.running || !chars.length) return;
-      var el = chars[ci++ % chars.length], cls = hand === 'l' ? 'lit-lh' : 'lit';
-      el.classList.add(cls); setTimeout(function () { el.classList.remove(cls); }, 140);
+    // Playable keys: press (or drag across) the keyboard. Below middle C lights sand (left hand),
+    // middle C and up lights blue (right hand), with the app's brief brighter flash on press.
+    var pressed = {}, byPointer = {};
+    function keyAt(px, py) {
+      if (py < hitY || py > H) return null;
+      for (var m in keyX) { var k = keyX[m]; if (k.b && px >= k.x && px <= k.x + k.w && py <= hitY + keyH * 0.62) return +m; }
+      for (m in keyX) { k = keyX[m]; if (!k.b && px >= k.x && px < k.x + k.w) return +m; }
+      return null;
+    }
+    function local(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    function press(id, m) {
+      var old = byPointer[id];
+      if (old === m) return;
+      if (old != null) delete pressed[old];
+      byPointer[id] = m;
+      if (m != null) pressed[m] = performance.now();
+      if (!hero.running) draw(t);
+    }
+    cv.addEventListener('pointerdown', function (e) {
+      var p = local(e), m = keyAt(p[0], p[1]);
+      if (m == null) return;
+      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+      press(e.pointerId, m);
+    });
+    cv.addEventListener('pointermove', function (e) {
+      var p = local(e);
+      cv.style.cursor = keyAt(p[0], p[1]) != null ? 'pointer' : '';
+      if (e.pointerId in byPointer) press(e.pointerId, keyAt(p[0], p[1]));
+    });
+    function release(e) { if (e.pointerId in byPointer) { press(e.pointerId, null); delete byPointer[e.pointerId]; } }
+    cv.addEventListener('pointerup', release);
+    cv.addEventListener('pointercancel', release);
+    hero.pressColor = function (m) {
+      if (!(m in pressed)) return null;
+      return { col: +m < 60 ? C.lh : C.rh, age: (performance.now() - pressed[m]) / 1000 };
     };
     draw(t);
     hero.start();
@@ -848,10 +888,13 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
     };
     z.build = function () {
       z.clear();
-      var vh = window.innerHeight, K = 0.85;
+      var vh = window.innerHeight;
       var a = 0.5 * vh, c = 0.5 * vh, b = Math.max(0.6 * vh, o.hold(vh));
+      var Hh = o.inner.offsetHeight, room = Math.max(0, vh - Hh - 24);
+      var v = o.fit ? Math.min(0.06, Math.max(0.02, room / b)) : 0.15, K = 1 - v;
       var dA = K * a / 2, dB = K * b, dC = K * c / 2, total = a + b + c;
-      var y0 = a + b / 2 - (dA + dB / 2);   // where the section's top sits on screen as the slow-down begins
+      var mid = Math.max(-24, (vh - Hh) / 2);  // the section's top on screen at the middle of the hold
+      var y0 = mid + a + b / 2 - (dA + dB / 2); // ...and where it sits as the slow-down begins
       o.sec.style.paddingBottom = (base + dA + dB + dC) + 'px';
       z.a = a; z.b = b; z.c = c;
       z.tl = gsap.timeline({ scrollTrigger: { trigger: o.sec, start: 'top ' + y0 + 'px', end: '+=' + total, scrub: true,
@@ -926,7 +969,7 @@ footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
         // Smooth slow-down instead of a pin: the milestones wipe in while the page crawls.
         var zone = slowZone({
           sec: document.getElementById('history'), inner: document.querySelector('.history-pin'),
-          hold: function (vh) { return (n - 1) * vh * 0.55; },
+          hold: function (vh) { return (n - 1) * vh * 0.8; }, fit: true,
           add: function (tl, a, b) {
             var step = b / (n - 1);
             items.forEach(function (li, i) {
