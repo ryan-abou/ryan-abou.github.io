@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: PianoGlass at night. The hero is the app's note highway playing onto a keyboard; scrolling plays through PianoGlass's story (statement, pinned build history, features), then a sideways gallery of sites and a list of AI work. Colours, font and glass come from the PianoGlass code (NotePalette, GlassTokens, Outfit). */
 :root {
@@ -119,7 +119,15 @@ img { display: block; max-width: 100%; }
 @media (min-width: 900px) { .hero-copy { padding-block: 10rem 16rem; } }
 .hero h1 { font-weight: 700; font-size: clamp(3.2rem, 11vw, 9.5rem); letter-spacing: -0.045em; line-height: .9; }
 .hero h1 .line { display: block; }
-.hero h1 .line + .line { color: transparent; -webkit-text-stroke: 1.5px rgba(233,238,242,.85); font-weight: 600; }
+.hero h1 .line + .line { font-weight: 250; color: #b4bec9; letter-spacing: -0.035em; }
+/* Each letter is a key: the melody below lights them in right-hand blue, one note at a time. */
+.ch { transition: color .8s ease, text-shadow .8s ease; }
+.ch.lit { color: var(--rh); text-shadow: 0 0 30px rgba(102,173,242,.55); transition: color .05s, text-shadow .05s; }
+.ch.lit-lh { color: var(--lh); text-shadow: 0 0 30px rgba(232,184,109,.5); transition: color .05s, text-shadow .05s; }
+.hero h1 .ch:hover { color: var(--rh); transition: color .05s; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
 .hero .lede { font-size: clamp(1.12rem, 1.1vw + .85rem, 1.45rem); font-weight: 300; max-width: 35rem; color: #cfd7e0; line-height: 1.45; }
 .hero .lede b { color: var(--ink); font-weight: 500; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
@@ -164,10 +172,10 @@ img { display: block; max-width: 100%; }
 .headset figcaption { font-size: .86rem; color: var(--muted); padding: .75rem .5rem .25rem; font-weight: 300; }
 .headset figcaption .rh { color: var(--rh); } .headset figcaption .lh { color: var(--lh); }
 
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; margin: 0; }
-.facts div { background: var(--bg); padding: 1.3rem 1.25rem; display: grid; gap: .3rem; align-content: start; }
-.facts dt { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.facts dd { margin: 0; font-weight: 600; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; margin: 0; }
+.facts div { background: var(--bg); padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1.25rem, 3vw, 2.25rem); display: grid; gap: .4rem; align-content: start; }
+.facts dt { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .facts dd small { font-weight: 300; font-size: .82rem; color: var(--muted); display: block; margin-top: .3rem; letter-spacing: 0; }
 
 /* Build history */
@@ -293,8 +301,8 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 /* Skills marquee */
 .marquee { overflow: hidden; border-block: 1px solid var(--line); padding-block: 1.4rem; margin-block: clamp(3rem, 7vw, 5rem) 0; }
 .marquee-track { display: flex; gap: 2.5rem; white-space: nowrap; width: max-content; font-weight: 700; font-size: clamp(1.9rem, 4.2vw, 3.3rem); letter-spacing: -0.03em; }
-.marquee-track span { color: transparent; -webkit-text-stroke: 1px rgba(233,238,242,.35); }
-.marquee-track span:nth-child(3n+1) { color: var(--ink); -webkit-text-stroke: 0; }
+.marquee-track span { color: #4a5563; font-weight: 300; }
+.marquee-track span:nth-child(3n+1) { color: var(--ink); font-weight: 700; }
 
 /* Sites gallery */
 .sites { padding-block: clamp(5rem, 9vw, 7rem) 2rem; }
@@ -342,7 +350,7 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 /* Footer */
 footer { padding-block: clamp(5rem, 10vw, 8rem) 3rem; display: grid; gap: 2rem; }
 footer .sign { font-weight: 700; font-size: clamp(2.8rem, 9.5vw, 7.8rem); letter-spacing: -0.045em; line-height: .9; }
-footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(233,238,242,.5); font-weight: 600; }
+footer .sign span { display: block; color: #6f7a87; font-weight: 250; }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: .76rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1.25rem; }
 .foot-row a { color: var(--ink); text-decoration: none; }
 
@@ -366,7 +374,7 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
     <div class="hero-stage" aria-hidden="true"><canvas id="highway"></canvas></div>
     <div class="wrap hero-copy">
       <span class="eyebrow">11th grade · Georgia</span>
-      <h1 id="name"><span class="line">Ryan</span><span class="line">Abourjeili</span></h1>
+      <h1 id="name" aria-label="Ryan Abourjeili"><span class="line" aria-hidden="true"><span class="ch">R</span><span class="ch">y</span><span class="ch">a</span><span class="ch">n</span></span><span class="line" aria-hidden="true"><span class="ch">A</span><span class="ch">b</span><span class="ch">o</span><span class="ch">u</span><span class="ch">r</span><span class="ch">j</span><span class="ch">e</span><span class="ch">i</span><span class="ch">l</span><span class="ch">i</span></span></h1>
       <p class="lede">I build <b>mixed-reality apps</b> and <b>interactive websites</b>, usually to teach something or to show how it works. I'm currently building a piano trainer for the Meta Quest 3.</p>
       <div class="hero-actions">
         <a class="pill on" href="#pianoglass">See PianoGlass
@@ -400,8 +408,6 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
     <dl class="facts">
       <div><dt>Commits</dt><dd><span data-count="515">515</span><small>since Sep 7, 2026</small></dd></div>
       <div><dt>Milestone builds</dt><dd><span data-count="12">12</span><small>each tested on a real piano</small></dd></div>
-      <div><dt>Keys calibrated</dt><dd><span data-count="88">88</span><small>A0 to C8</small></dd></div>
-      <div><dt>Perfect window</dt><dd>±<span data-count="40">40</span> ms<small>Great 80 · Good 150</small></dd></div>
     </dl>
   </section>
 
@@ -598,6 +604,7 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (function () {
   var root = document.documentElement;
@@ -684,17 +691,20 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
           var n = notes[i], kx = keyX[n.m]; if (!kx) continue;
           var st = n.s + off, en = st + n.d;
           if (t >= st && t < en) { now[n.m] = n.h; onset[n.m] = t - st; }
-          var h0 = Math.max(0, (st - t) * pps), h1 = (en - t) * pps - 2;
-          if (h1 <= 0 || h0 > top) continue;
-          var nw = kx.b ? kx.w * 0.8 : kw * 0.62, nx = kx.x + (kx.w - nw) / 2;
+          // each note is exactly as wide as its key, with a clear gap before the next one
+          var gap = Math.max(10, BEAT * pps * 0.12);
+          var h0 = Math.max(0, (st - t) * pps), h1 = (en - t) * pps - gap;
+          if (h1 <= h0 || h0 > top) continue;
+          var nw = kx.w - (kx.b ? 1 : 2), nx = kx.x + (kx.w - nw) / 2;
           var hit = t >= st, base = n.h === 'r' ? C.rh : C.lh;
           ctx.fillStyle = hit ? C.hit : base;
           quad(nx, nx + nw, h0, Math.min(h1, top)); ctx.fill();
           var bot = P(nx + nw / 2, h0), slabH = (h1 - h0) * bot[2];
-          if (!hit && slabH > 22 && h0 < top * 0.8) {
+          var fs = Math.max(10, Math.min(24, nw * 0.62) * bot[2]);
+          if (!hit && slabH > fs * 1.5 && h0 < top * 0.85) {
             ctx.fillStyle = C.label; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-            ctx.font = '600 ' + Math.max(8, Math.min(13, nw * 0.5) * bot[2]) + 'px Outfit, system-ui, sans-serif';
-            ctx.fillText(NAMES[n.m % 12], bot[0], bot[1] - 6 * bot[2]);
+            ctx.font = '700 ' + fs + 'px Outfit, system-ui, sans-serif';
+            ctx.fillText(NAMES[n.m % 12], bot[0], bot[1] - fs * 0.45);
           }
         }
       }
@@ -721,19 +731,33 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
           var j = a2 <= 40 ? ['Perfect', 'var(--j-perfect)'] : a2 <= 80 ? ['Great', 'var(--j-great)'] : a2 <= 150 ? ['Good', 'var(--j-good)'] : ['Miss', 'var(--j-miss)'];
           stJ.textContent = j[0]; stJ.style.color = j[1]; stN.textContent = NAMES[notes[latest].m % 12];
           stMs.textContent = (o > 0 ? '+' : o < 0 ? '−' : '') + a2 + ' ms';
+          if (hero.onNote) hero.onNote('r');
         }
       }
+      // left-hand notes light a letter in sand as they start
+      for (i = mel.length; i < notes.length; i++) {
+        var s1 = notes[i].s;
+        if (lastT >= 0 && (t >= lastT ? (s1 > lastT && s1 <= t) : (s1 > lastT || s1 <= t)) && hero.onNote) hero.onNote('l');
+      }
+      lastT = t;
     }
     layout();
     var t = 0.6, prev = null, visible = true, raf = 0;
     function frame(ts) {
       if (!hero.running) return;
-      if (prev != null) t = (t + Math.min((ts - prev) / 1000, 0.05) * (1 + hero.boost * 1.5)) % (LOOP * BEAT);
+      if (prev != null) t = (t + Math.min((ts - prev) / 1000, 0.05)) % (LOOP * BEAT);
       prev = ts; draw(t); raf = requestAnimationFrame(frame);
     }
     hero.start = function () { if (hero.running || !motionOn || !visible || document.hidden) return; hero.running = true; prev = null; raf = requestAnimationFrame(frame); };
     hero.stop = function () { hero.running = false; cancelAnimationFrame(raf); };
-    hero.drawStatic = function () { draw(t); };
+    hero.drawStatic = function () { lastT = -1; draw(t); };
+    // Your name plays along: right-hand notes light the next letter blue, left-hand notes sand.
+    var chars = document.querySelectorAll('#name .ch'), ci = 0;
+    hero.onNote = function (hand) {
+      if (!motionOn || !hero.running || !chars.length) return;
+      var el = chars[ci++ % chars.length], cls = hand === 'l' ? 'lit-lh' : 'lit';
+      el.classList.add(cls); setTimeout(function () { el.classList.remove(cls); }, 140);
+    };
     draw(t);
     hero.start();
     if ('ResizeObserver' in window) new ResizeObserver(function () { layout(); draw(t); }).observe(cv);
@@ -790,11 +814,75 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
   })();
 
   /* ---------- Scroll motion (GSAP + ScrollTrigger) ---------- */
-  var ctxG = null, mm = null, splits = [];
+  var ctxG = null, mm = null, splits = [], zones = [], lenis = null, lenisTick = null, resizeT = null;
+
+  // Smooth scroll to a page position (Lenis when it's running, otherwise our own eased scroll).
+  function easeInOutCubic(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
+  function smoothTo(y) {
+    if (lenis) { lenis.scrollTo(y, { duration: 1.5, easing: easeInOutCubic }); return; }
+    var from = window.scrollY, d = y - from, t0 = null, dur = 1100;
+    function step(ts) { if (t0 == null) t0 = ts; var p = Math.min(1, (ts - t0) / dur); window.scrollTo(0, from + d * easeInOutCubic(p)); if (p < 1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1), el = id ? document.getElementById(id) : null;
+    if (!el) return;
+    e.preventDefault();
+    smoothTo(id === 'top' ? 0 : el.getBoundingClientRect().top + window.scrollY);
+  });
+
+  // A "slow zone": instead of pinning (a hard stop), the section counter-moves against the
+  // scroll so the page eases down to ~15% speed, holds there while something plays, and eases
+  // back up. Quad ease-in, linear hold, quad ease-out keep the speed continuous at every joint.
+  function slowZone(o) {
+    var z = { tl: null, a: 0, b: 0, c: 0 };
+    o.sec.style.paddingBottom = '';
+    var base = parseFloat(getComputedStyle(o.sec).paddingBottom) || 0;
+    z.clear = function () {
+      if (z.tl) { if (z.tl.scrollTrigger) z.tl.scrollTrigger.kill(); z.tl.kill(); z.tl = null; }
+      gsap.set(o.inner, { clearProps: 'transform' });
+      if (o.reset) o.reset();
+      o.sec.style.paddingBottom = '';
+    };
+    z.build = function () {
+      z.clear();
+      var vh = window.innerHeight, K = 0.85;
+      var a = 0.5 * vh, c = 0.5 * vh, b = Math.max(0.6 * vh, o.hold(vh));
+      var dA = K * a / 2, dB = K * b, dC = K * c / 2, total = a + b + c;
+      var y0 = a + b / 2 - (dA + dB / 2);   // where the section's top sits on screen as the slow-down begins
+      o.sec.style.paddingBottom = (base + dA + dB + dC) + 'px';
+      z.a = a; z.b = b; z.c = c;
+      z.tl = gsap.timeline({ scrollTrigger: { trigger: o.sec, start: 'top ' + y0 + 'px', end: '+=' + total, scrub: true,
+        onUpdate: o.onUpdate ? function (s) { o.onUpdate(s.progress * total, a, b, c); } : null } });
+      z.tl.to(o.inner, { y: dA, ease: 'power1.in', duration: a }, 0)
+        .to(o.inner, { y: dA + dB, ease: 'none', duration: b }, a)
+        .to(o.inner, { y: dA + dB + dC, ease: 'power1.out', duration: c }, a + b);
+      if (o.add) o.add(z.tl, a, b, c);
+    };
+    z.remove = function () { z.clear(); var i = zones.indexOf(z); if (i >= 0) zones.splice(i, 1); };
+    z.build(); zones.push(z);
+    return z;
+  }
+  function onResize() {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(function () { zones.forEach(function (z) { z.build(); }); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 250);
+  }
+
   function enableMotion(withIntro) {
     if (!hasGsap) return;
     root.classList.add('motion');
     gsap.registerPlugin(ScrollTrigger, SplitText);
+    // Lenis turns each wheel notch into a continuous glide, so scroll-linked motion never jumps.
+    if (window.Lenis && !lenis) {
+      lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      lenisTick = function (time) { if (lenis) lenis.raf(time * 1000); };
+      gsap.ticker.add(lenisTick);
+      gsap.ticker.lagSmoothing(0);
+    }
+    window.addEventListener('resize', onResize);
     ctxG = gsap.context(function () {
       gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
 
@@ -805,7 +893,6 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
       }
 
       gsap.to('.hero-copy', { yPercent: -16, opacity: 0.15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
-      ScrollTrigger.create({ trigger: '.hero', start: 'top top', end: 'bottom top', onUpdate: function (s) { hero.boost = s.progress; } });
 
       var st = SplitText.create('#statement', { type: 'words' }); splits.push(st);
       gsap.fromTo(st.words, { opacity: 0.14 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: '#statement', start: 'top 80%', end: 'bottom 45%', scrub: true } });
@@ -827,26 +914,40 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
           b.innerHTML = '<b>' + li.dataset.date + '</b><span>' + li.dataset.commits + ' commits</span>';
           var w = document.createElement('li'); w.appendChild(b); rail.appendChild(w); return b;
         });
-        var cur = -1, shown = { v: +items[0].dataset.commits };
+        var cur = -1, shown = { v: +items[0].dataset.commits }, n = items.length;
         function setActive(i) {
           if (i === cur) return; cur = i;
-          btns.forEach(function (b, n) { b.classList.toggle('on', n === i); });
+          btns.forEach(function (b, k) { b.classList.toggle('on', k === i); });
           gsap.to(shown, { v: +items[i].dataset.commits, duration: 0.6, ease: 'power2.out', overwrite: true, onUpdate: function () { counter.textContent = Math.round(shown.v); } });
           if (rail.scrollWidth > rail.clientWidth) rail.scrollTo({ left: btns[i].parentNode.offsetLeft - 16, behavior: 'smooth' });
         }
         setActive(0);
-        var tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: {
-          trigger: '.history-pin', start: 'top top', end: function () { return '+=' + (items.length - 1) * window.innerHeight * 0.7; },
-          pin: true, scrub: 0.6, invalidateOnRefresh: true,
-          onUpdate: function (s) { setActive(Math.min(items.length - 1, Math.round(s.progress * (items.length - 1)))); gsap.set(fill, { scaleY: s.progress }); }
-        } });
-        items.forEach(function (li, i) {
-          if (i === 0) return;
-          tl.fromTo(li, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1 }, i - 1)
-            .fromTo(li.querySelector('img'), { scale: 1.12, xPercent: 4 }, { scale: 1, xPercent: 0, duration: 1 }, i - 1)
-            .to(items[i - 1].querySelector('img'), { scale: 0.94, opacity: 0.4, duration: 1 }, i - 1);
+        var imgs = items.map(function (li) { return li.querySelector('img'); });
+        // Smooth slow-down instead of a pin: the milestones wipe in while the page crawls.
+        var zone = slowZone({
+          sec: document.getElementById('history'), inner: document.querySelector('.history-pin'),
+          hold: function (vh) { return (n - 1) * vh * 0.55; },
+          add: function (tl, a, b) {
+            var step = b / (n - 1);
+            items.forEach(function (li, i) {
+              if (i === 0) return;
+              var at = a + (i - 1) * step;
+              tl.fromTo(li, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power2.inOut', duration: step * 0.8 }, at)
+                .fromTo(imgs[i], { scale: 1.12, xPercent: 4 }, { scale: 1, xPercent: 0, ease: 'power2.out', duration: step * 0.8 }, at)
+                .to(imgs[i - 1], { scale: 0.94, opacity: 0.4, ease: 'power2.inOut', duration: step * 0.8 }, at);
+            });
+          },
+          onUpdate: function (time, a, b) {
+            var p = Math.max(0, Math.min(1, (time - a) / b));
+            setActive(Math.max(0, Math.min(n - 1, Math.floor((time - a) / (b / (n - 1)) + 0.6))));
+            gsap.set(fill, { scaleY: p });
+          },
+          reset: function () { gsap.set(items, { clearProps: 'clipPath' }); gsap.set(imgs, { clearProps: 'transform,opacity' }); }
         });
-        btns.forEach(function (b, i) { b.addEventListener('click', function () { var s = tl.scrollTrigger; window.scrollTo({ top: s.start + (s.end - s.start) * (i / (items.length - 1)) + 2, behavior: 'smooth' }); }); });
+        btns.forEach(function (b, i) { b.addEventListener('click', function () {
+          var s = zone.tl.scrollTrigger, y = s.start + zone.a + (i - 0.4) * (zone.b / (n - 1));
+          smoothTo(Math.max(s.start, y));
+        }); });
       })();
 
       gsap.from('.card', { y: 60, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12, scrollTrigger: { trigger: '.cards', start: 'top 85%' } });
@@ -863,39 +964,21 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
 
     mm = gsap.matchMedia();
     mm.add('(min-width: 820px)', function () {
-      // No hard pin: the gallery counter-moves against the scroll so the page eases down to
-      // about 15% speed while the cards slide sideways, then eases back up. Velocity is
-      // continuous at every joint: quad ease-in, linear hold, quad ease-out.
       var sec = document.getElementById('sites'), inner = sec.querySelector('.sites-inner'), track = document.getElementById('track');
       sec.classList.add('sideways');
-      var K = 0.85, tl = null, resizeT = null;
-      function build() {
-        if (tl) { tl.scrollTrigger && tl.scrollTrigger.kill(); tl.kill(); }
-        gsap.set([inner, track], { clearProps: 'transform' });
-        sec.style.paddingBottom = '';
-        var vh = window.innerHeight, cs = getComputedStyle(inner);
-        var box = inner.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-        var dist = Math.max(0, track.scrollWidth - box);
-        var a = 0.45 * vh, c = 0.45 * vh, b = Math.max(0.9 * vh, dist * 1.25);
-        var dA = K * a / 2, dB = K * b, dC = K * c / 2;
-        var y0 = a + b / 2 - (dA + dB / 2);              // section top's place on screen when the ease-in starts
-        sec.style.paddingBottom = 'calc(2rem + ' + (dA + dB + dC) + 'px)';
-        tl = gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top ' + y0 + 'px', end: '+=' + (a + b + c), scrub: true } });
-        tl.to(inner, { y: dA, ease: 'power1.in', duration: a }, 0)
-          .to(inner, { y: dA + dB, ease: 'none', duration: b }, a)
-          .to(inner, { y: dA + dB + dC, ease: 'power1.out', duration: c }, a + b)
-          .to(track, { x: -dist, ease: 'sine.inOut', duration: a * 0.5 + b + c * 0.5 }, a * 0.5);
-      }
-      build();
-      function onResize() { clearTimeout(resizeT); resizeT = setTimeout(function () { build(); ScrollTrigger.refresh(); }, 250); }
-      window.addEventListener('resize', onResize);
-      return function () {
-        window.removeEventListener('resize', onResize);
-        if (tl) { tl.scrollTrigger && tl.scrollTrigger.kill(); tl.kill(); }
-        gsap.set([inner, track], { clearProps: 'transform' });
-        sec.style.paddingBottom = '';
-        sec.classList.remove('sideways');
-      };
+      var dist = 0;
+      var zone = slowZone({
+        sec: sec, inner: inner,
+        hold: function (vh) {
+          var cs = getComputedStyle(inner);
+          dist = Math.max(0, track.scrollWidth - (inner.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)));
+          return Math.max(0.9 * vh, dist * 1.25);
+        },
+        add: function (tl, a, b, c) { tl.to(track, { x: -dist, ease: 'sine.inOut', duration: a * 0.5 + b + c * 0.5 }, a * 0.5); },
+        reset: function () { gsap.set(track, { clearProps: 'transform' }); }
+      });
+      ScrollTrigger.refresh();
+      return function () { zone.remove(); sec.classList.remove('sideways'); };
     });
     mm.add('(max-width: 819px)', function () {
       gsap.utils.toArray('.site').forEach(function (el) { gsap.from(el, { y: 50, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }); });
@@ -904,6 +987,9 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
     ScrollTrigger.refresh();
   }
   function disableMotion() {
+    window.removeEventListener('resize', onResize);
+    zones.slice().forEach(function (z) { z.remove(); });
+    if (lenis) { gsap.ticker.remove(lenisTick); lenis.destroy(); lenis = null; gsap.ticker.lagSmoothing(500, 33); }
     if (mm) { mm.revert(); mm = null; }
     if (ctxG) { ctxG.revert(); ctxG = null; }
     splits.forEach(function (s) { try { s.revert(); } catch (e) {} }); splits = [];
