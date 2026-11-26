@@ -257,16 +257,29 @@ img { display: block; max-width: 100%; }
 .legend span { display: inline-flex; align-items: center; gap: .3rem; }
 .legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 
-/* demo: practice */
-.tempo { display: grid; gap: .55rem; }
+/* demo: practice (real controls: TempoStep 25-200% in 5% steps, song panel toggles, hand picker) */
+.practice { gap: 1rem; }
+.seg, .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip { all: unset; box-sizing: border-box; cursor: pointer; font-family: var(--font); font-size: .85rem; padding: .38rem .9rem; border-radius: 999px; background: var(--btn); border: 1px solid rgba(255,255,255,.32); color: #d6dde5; transition: background .2s, border-color .2s, transform .15s; user-select: none; }
+.chip:hover { border-color: rgba(255,255,255,.7); }
+.chip:active { transform: scale(.96); }
+.chip:focus-visible { outline: 2px solid var(--rh); outline-offset: 2px; }
+.chip[aria-pressed="true"] { background: var(--on); border-color: rgba(160,205,250,.85); color: #fff; }
+.tempo { display: grid; gap: .5rem; }
 .tempo-top { display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); }
 .tempo-top b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
-.slider { position: relative; height: 6px; border-radius: 6px; background: rgba(255,255,255,.12); }
-.slider .fill { position: absolute; inset: 0 auto 0 0; width: 100%; border-radius: 6px; background: var(--rh); transition: width .8s var(--ease-out); }
-.slider .knob { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--ink); left: 100%; transition: left .8s var(--ease-out); box-shadow: 0 2px 8px rgba(0,0,0,.5); }
-.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
-.chips span { font-size: .8rem; padding: .32rem .8rem; border-radius: 999px; background: var(--btn); border: 1px solid rgba(255,255,255,.3); color: #d6dde5; transition: background .3s, border-color .3s; }
-.chips span.on { background: var(--on); border-color: rgba(160,205,250,.8); color: #fff; }
+.tempo-row { display: flex; align-items: center; gap: .6rem; }
+.tempo-row .step { flex: none; padding: .3rem .7rem; font-size: .78rem; }
+.tempo-ends { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .62rem; color: var(--faint); padding-inline: 5.6rem; }
+@media (max-width: 420px) { .tempo-ends { display: none; } }
+input[type="range"] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 28px; background: transparent; cursor: pointer; --p: 42.857%; }
+input[type="range"]:focus-visible { outline: 2px solid var(--rh); outline-offset: 2px; border-radius: 8px; }
+input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 6px; background: linear-gradient(90deg, var(--rh) var(--p), rgba(255,255,255,.14) var(--p)); }
+input[type="range"]::-moz-range-track { height: 6px; border-radius: 6px; background: rgba(255,255,255,.14); }
+input[type="range"]::-moz-range-progress { height: 6px; border-radius: 6px; background: var(--rh); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -7px; border-radius: 50%; background: var(--ink); border: 0; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
+input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--ink); border: 0; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.practice-line { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 /* Science fair */
 .fair { padding-block: clamp(3rem, 7vw, 5rem); }
@@ -305,7 +318,7 @@ img { display: block; max-width: 100%; }
 .site-links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .5rem; }
 .site-links .pill { padding: .45rem .95rem; font-size: .85rem; }
 .sideways { overflow: hidden; }
-.sideways .sites-inner { min-height: 100svh; align-content: center; padding-block: 5rem 2rem; }
+.sideways .sites-inner { min-height: 100svh; align-content: center; padding-block: 5rem 2rem; will-change: transform; }
 .sideways .track { display: flex; gap: 1.5rem; width: max-content; grid-template-columns: none; }
 .sideways .site { width: clamp(20rem, 38vw, 31rem); }
 
@@ -360,7 +373,7 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="pill" href="https://github.com/ryan-abou">github.com/ryan-abou</a>
       </div>
-      <div class="now-playing" id="now-playing" aria-hidden="true"><i></i><span>Ode to Joy · <span class="rh">right hand</span> and <span class="lh">left hand</span></span></div>
+      <div class="now-playing" id="now-playing" aria-hidden="true"><i></i><span>Ode to Joy · <span class="lh">left hand</span> and <span class="rh">right hand</span></span></div>
     </div>
     <div class="status glass" id="status" aria-hidden="true"><span class="lbl">Last note</span><span class="j" id="st-j" style="color:var(--j-perfect)">Perfect</span><span class="n" id="st-n">E</span><span class="ms" id="st-ms">0 ms</span></div>
   </header>
@@ -380,8 +393,8 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
         <div class="hero-actions"><a class="pill" href="https://github.com/ryan-abou/pianoglass">Code on GitHub</a></div>
       </div>
       <figure class="headset glass">
-        <div class="viewport"><img id="pg-shot" src="img/f6.jpg" alt="Through the Quest 3 lens: solid blue right-hand notes and sand-outlined left-hand notes fall down a white grid onto a real piano's keys." width="1440" height="810"><span class="tag glass">Quest 3 · Nov 14</span></div>
-        <figcaption>Filmed through the lens while practicing the right hand. Your notes are solid <span class="rh">blue</span>; the left hand's part stays visible as <span class="lh">sand</span> outlines.</figcaption>
+        <div class="viewport"><img id="pg-shot" src="img/f6.jpg" alt="Through the Quest 3 lens: sand-outlined left-hand notes and solid blue right-hand notes fall down a white grid onto a real piano's keys." width="1440" height="810"><span class="tag glass">Quest 3 · Nov 14</span></div>
+        <figcaption>Filmed through the lens while practicing the right hand. The left hand's part stays visible as <span class="lh">sand</span> outlines, and your right-hand notes are solid <span class="rh">blue</span>.</figcaption>
       </figure>
     </div>
     <dl class="facts">
@@ -410,7 +423,7 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
           <li data-date="Nov 3" data-commits="122"><figure><div class="shot"><img src="img/f3.jpg" alt="Note highway grid over the real keys with the key being played lit." width="1440" height="810"></div><figcaption><time datetime="2026-11-03">Nov 3</time><span class="commits">122 commits</span><span class="what">The note highway and its grid, with every note judged as you play it.</span></figcaption></figure></li>
           <li data-date="Nov 5" data-commits="204"><figure><div class="shot"><img src="img/f4.jpg" alt="A hand on the real keys under a falling note, with a glass panel above." width="1440" height="810"></div><figcaption><time datetime="2026-11-05">Nov 5</time><span class="commits">204 commits</span><span class="what">Live score and a metronome while you play.</span></figcaption></figure></li>
           <li data-date="Nov 7" data-commits="225"><figure><div class="shot"><img src="img/f5.jpg" alt="Notes falling onto real keys with a panel showing 100 percent of keys right." width="1440" height="810"></div><figcaption><time datetime="2026-11-07">Nov 7</time><span class="commits">225 commits</span><span class="what">Memory fade: the notes fade out as you learn the song.</span></figcaption></figure></li>
-          <li data-date="Nov 14" data-commits="338"><figure><div class="shot"><img src="img/f6.jpg" alt="Through the Quest 3 lens: blue right-hand notes and sand-outlined left-hand notes on a white grid over a real piano." width="1440" height="810"></div><figcaption><time datetime="2026-11-14">Nov 14</time><span class="commits">338 commits</span><span class="what">On Quest 3 in true colour: right hand blue, left hand sand, note names on every note.</span></figcaption></figure></li>
+          <li data-date="Nov 14" data-commits="338"><figure><div class="shot"><img src="img/f6.jpg" alt="Through the Quest 3 lens: sand-outlined left-hand notes and blue right-hand notes on a white grid over a real piano." width="1440" height="810"></div><figcaption><time datetime="2026-11-14">Nov 14</time><span class="commits">338 commits</span><span class="what">On Quest 3 in true colour: left hand sand, right hand blue, note names on every note.</span></figcaption></figure></li>
         </ol>
       </div>
       <p class="history-note">Sep 14 to Nov 7 were recorded on a Quest 2, and the blue tint was a passthrough bug fixed later. Nov 14 is filmed through the Quest 3 lens with a phone. Now at 515 commits.</p>
@@ -469,13 +482,28 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
       </article>
       <article class="card glass">
         <h3>Practice tools</h3>
-        <p>Slow the tempo, loop bars, play one hand at a time, or let the song wait for you. Memory fade hides the notes as you learn them.</p>
-        <div class="demo">
-          <div class="tempo">
-            <div class="tempo-top"><span>Tempo</span><b id="tempo-v">100%</b></div>
-            <div class="slider"><div class="fill" id="tempo-fill"></div><div class="knob" id="tempo-knob"></div></div>
+        <p>Pick a hand, set the tempo anywhere from 25% to 200%, and turn on the metronome, wait mode or memory fade. Try them.</p>
+        <div class="demo practice">
+          <div class="seg" role="group" aria-label="Which hand to practice">
+            <button type="button" class="chip" data-hand="Left hand" aria-pressed="false">Left hand</button>
+            <button type="button" class="chip" data-hand="Right hand" aria-pressed="false">Right hand</button>
+            <button type="button" class="chip" data-hand="Both hands" aria-pressed="true">Both</button>
           </div>
-          <div class="chips" id="chips"><span>Metronome</span><span>Loop bars</span><span>Wait mode</span><span>Right hand</span><span>Left hand</span><span>Memory fade</span></div>
+          <div class="tempo">
+            <div class="tempo-top"><label for="tempo">Tempo</label><b id="tempo-v">Tempo 100%</b></div>
+            <div class="tempo-row">
+              <button type="button" class="chip step" id="tempo-down" aria-label="Tempo minus 5%">Tempo −</button>
+              <input type="range" id="tempo" min="25" max="200" step="5" value="100" aria-valuetext="Tempo 100%">
+              <button type="button" class="chip step" id="tempo-up" aria-label="Tempo plus 5%">Tempo +</button>
+            </div>
+            <div class="tempo-ends" aria-hidden="true"><span>25%</span><span>200%</span></div>
+          </div>
+          <div class="chips" role="group" aria-label="Practice options">
+            <button type="button" class="chip" data-opt="Metronome" aria-pressed="false">Metronome</button>
+            <button type="button" class="chip" data-opt="Wait mode" aria-pressed="false">Wait mode</button>
+            <button type="button" class="chip" data-opt="Memory fade" aria-pressed="false">Memory fade</button>
+          </div>
+          <p class="practice-line" id="practice-line" aria-live="polite">Both hands · Tempo 100%</p>
         </div>
       </article>
     </div>
@@ -736,14 +764,29 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
     }, 1300));
   })();
   (function practice() {
-    var v = document.getElementById('tempo-v'), f = document.getElementById('tempo-fill'), k = document.getElementById('tempo-knob'), chips = document.querySelectorAll('#chips span');
-    if (!v) return;
-    chips[0].classList.add('on'); chips[3].classList.add('on');
-    var tempos = [100, 75, 60, 85], i = 0;
-    demos.push(cycler(v.closest('.demo'), function () {
-      var p = tempos[i % tempos.length]; v.textContent = p + '%'; f.style.width = p + '%'; k.style.left = p + '%';
-      chips.forEach(function (c, n) { c.classList.toggle('on', n === i % chips.length || n === (i + 3) % chips.length); }); i++;
-    }, 1600));
+    // Interactive: the viewer drives it. Same limits as TempoStep (25-200%, 5% steps).
+    var range = document.getElementById('tempo'), v = document.getElementById('tempo-v'), line = document.getElementById('practice-line');
+    if (!range) return;
+    var MIN = 25, MAX = 200, STEP = 5;
+    var hands = document.querySelectorAll('.practice [data-hand]'), opts = document.querySelectorAll('.practice [data-opt]');
+    function render() {
+      var p = +range.value;
+      range.style.setProperty('--p', ((p - MIN) / (MAX - MIN) * 100) + '%');
+      v.textContent = 'Tempo ' + p + '%';
+      range.setAttribute('aria-valuetext', 'Tempo ' + p + '%');
+      var hand = 'Both hands';
+      hands.forEach(function (b) { if (b.getAttribute('aria-pressed') === 'true') hand = b.dataset.hand; });
+      var on = [];
+      opts.forEach(function (b) { if (b.getAttribute('aria-pressed') === 'true') on.push(b.dataset.opt); });
+      line.textContent = [hand, 'Tempo ' + p + '%'].concat(on).join(' · ');
+    }
+    function setTempo(p) { range.value = Math.max(MIN, Math.min(MAX, Math.round(p / STEP) * STEP)); render(); }
+    range.addEventListener('input', render);
+    document.getElementById('tempo-down').addEventListener('click', function () { setTempo(+range.value - STEP); });
+    document.getElementById('tempo-up').addEventListener('click', function () { setTempo(+range.value + STEP); });
+    hands.forEach(function (b) { b.addEventListener('click', function () { hands.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); }); render(); }); });
+    opts.forEach(function (b) { b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); render(); }); });
+    render();
   })();
 
   /* ---------- Scroll motion (GSAP + ScrollTrigger) ---------- */
@@ -756,15 +799,9 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
       gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
 
       if (withIntro) {
-        root.classList.add('splitting');
-        var go = function () {
-          if (go.done) return; go.done = true; root.classList.remove('splitting');
-          var sp = SplitText.create('#name .line', { type: 'chars,lines', mask: 'lines', linesClass: 'mask-line' }); splits.push(sp);
-          gsap.from(sp.chars, { yPercent: 115, duration: 1.1, ease: 'expo.out', stagger: 0.028, delay: 0.1 });
-          gsap.from('.hero .eyebrow, .hero .lede, .hero-actions, .now-playing, .status', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.45 });
-        };
-        (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
-        setTimeout(go, 1500);
+        // The name rises in whole lines, so Outfit's kerning and the y/j descenders stay intact.
+        gsap.from('#name .line', { y: 60, opacity: 0, filter: 'blur(10px)', duration: 1.2, ease: 'expo.out', stagger: 0.12, delay: 0.1, clearProps: 'filter' });
+        gsap.from('.hero .eyebrow, .hero .lede, .hero-actions, .now-playing, .status', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.4 });
       }
 
       gsap.to('.hero-copy', { yPercent: -16, opacity: 0.15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
@@ -821,20 +858,44 @@ footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5
         gsap.fromTo(row.querySelectorAll('.when, .body, .go'), { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.07, scrollTrigger: { trigger: row, start: 'top 88%' } });
       });
 
-      var sig = SplitText.create('footer .sign', { type: 'chars' }); splits.push(sig);
-      gsap.from(sig.chars, { yPercent: 60, opacity: 0, ease: 'none', stagger: 0.03, scrollTrigger: { trigger: 'footer', start: 'top 92%', end: 'top 50%', scrub: true } });
+      gsap.from('footer .sign', { y: 50, opacity: 0, ease: 'none', scrollTrigger: { trigger: 'footer', start: 'top 92%', end: 'top 55%', scrub: true } });
     });
 
     mm = gsap.matchMedia();
     mm.add('(min-width: 820px)', function () {
-      var sec = document.getElementById('sites'), track = document.getElementById('track');
+      // No hard pin: the gallery counter-moves against the scroll so the page eases down to
+      // about 15% speed while the cards slide sideways, then eases back up. Velocity is
+      // continuous at every joint: quad ease-in, linear hold, quad ease-out.
+      var sec = document.getElementById('sites'), inner = sec.querySelector('.sites-inner'), track = document.getElementById('track');
       sec.classList.add('sideways');
-      var dist = function () { return Math.max(0, track.scrollWidth - track.parentNode.clientWidth); };
-      var tw = gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 0.6, invalidateOnRefresh: true } });
-      gsap.utils.toArray('.site .view img').forEach(function (img) {
-        gsap.fromTo(img, { xPercent: -4 }, { xPercent: 4, ease: 'none', scrollTrigger: { trigger: img, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } });
-      });
-      return function () { sec.classList.remove('sideways'); };
+      var K = 0.85, tl = null, resizeT = null;
+      function build() {
+        if (tl) { tl.scrollTrigger && tl.scrollTrigger.kill(); tl.kill(); }
+        gsap.set([inner, track], { clearProps: 'transform' });
+        sec.style.paddingBottom = '';
+        var vh = window.innerHeight, cs = getComputedStyle(inner);
+        var box = inner.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        var dist = Math.max(0, track.scrollWidth - box);
+        var a = 0.45 * vh, c = 0.45 * vh, b = Math.max(0.9 * vh, dist * 1.25);
+        var dA = K * a / 2, dB = K * b, dC = K * c / 2;
+        var y0 = a + b / 2 - (dA + dB / 2);              // section top's place on screen when the ease-in starts
+        sec.style.paddingBottom = 'calc(2rem + ' + (dA + dB + dC) + 'px)';
+        tl = gsap.timeline({ scrollTrigger: { trigger: sec, start: 'top ' + y0 + 'px', end: '+=' + (a + b + c), scrub: true } });
+        tl.to(inner, { y: dA, ease: 'power1.in', duration: a }, 0)
+          .to(inner, { y: dA + dB, ease: 'none', duration: b }, a)
+          .to(inner, { y: dA + dB + dC, ease: 'power1.out', duration: c }, a + b)
+          .to(track, { x: -dist, ease: 'sine.inOut', duration: a * 0.5 + b + c * 0.5 }, a * 0.5);
+      }
+      build();
+      function onResize() { clearTimeout(resizeT); resizeT = setTimeout(function () { build(); ScrollTrigger.refresh(); }, 250); }
+      window.addEventListener('resize', onResize);
+      return function () {
+        window.removeEventListener('resize', onResize);
+        if (tl) { tl.scrollTrigger && tl.scrollTrigger.kill(); tl.kill(); }
+        gsap.set([inner, track], { clearProps: 'transform' });
+        sec.style.paddingBottom = '';
+        sec.classList.remove('sideways');
+      };
     });
     mm.add('(max-width: 819px)', function () {
       gsap.utils.toArray('.site').forEach(function (el) { gsap.from(el, { y: 50, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } }); });
