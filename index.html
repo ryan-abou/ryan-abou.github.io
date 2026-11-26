@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Ryan Abourjeili</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column that opens on a lit piano key, then the featured project with its build history, then two lists of shorter work. */
+:root {
+  --paper: #f1f3f7;
+  --surface: #ffffff;
+  --ink: #101828;
+  --muted: #586378;
+  --line: #d8dde6;
+  --note: #2a78db;
+  --note-soft: #2a78db1f;
+  --hit: #13995a;
+  --key-white: #ffffff;
+  --key-black: #1b2333;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --step--1: 0.8125rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.75rem;
+  --step-3: clamp(2.25rem, 5vw + 1rem, 3.75rem);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0b111b; --surface: #121a27; --ink: #e4eaf3; --muted: #94a1b5; --line: #222d3d;
+    --note: #5ea3f6; --note-soft: #5ea3f624; --hit: #3cc985; --key-white: #d9e0ea; --key-black: #0b111b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0b111b; --surface: #121a27; --ink: #e4eaf3; --muted: #94a1b5; --line: #222d3d;
+  --note: #5ea3f6; --note-soft: #5ea3f624; --hit: #3cc985; --key-white: #d9e0ea; --key-black: #0b111b;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+.wrap {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--note); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--note); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Intro */
+.intro { padding-block: 3.5rem 1.5rem; display: grid; gap: 1.25rem; }
+.intro h1 { font-size: var(--step-3); font-weight: 700; letter-spacing: -0.02em; }
+.intro .lede { font-size: var(--step-1); max-width: 40rem; color: var(--ink); line-height: 1.45; }
+.intro .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: var(--step--1); font-family: var(--font-mono); }
+.intro .links span { color: var(--muted); }
+
+/* Keyboard strip */
+.keys { padding-block: 0.5rem 0; }
+.keys svg { display: block; width: 100%; height: auto; }
+.keys .w { fill: var(--key-white); stroke: var(--line); stroke-width: 0.6; }
+.keys .b { fill: var(--key-black); }
+.keys .lit { fill: var(--note); }
+.keys .fall { fill: var(--note); opacity: 0.85; }
+.keys .judge { fill: var(--hit); }
+@media (prefers-reduced-motion: no-preference) {
+  .keys .fall { animation: drop 2.4s cubic-bezier(.45,0,.75,1) infinite; }
+  @keyframes drop { 0% { transform: translateY(-46px); opacity: 0; } 15% { opacity: .85; } 80% { transform: translateY(0); opacity: .85; } 100% { transform: translateY(0); opacity: 0; } }
+}
+
+/* Featured */
+.featured { padding-block: 3rem 1rem; display: grid; gap: 2.5rem; border-top: 1px solid var(--line); }
+.feat-top { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 860px) { .feat-top { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; } }
+.feat-text { display: grid; gap: 1rem; min-width: 0; }
+.feat-text h2 { font-size: var(--step-2); font-weight: 700; }
+.feat-text h2 small { display: block; font-family: var(--font-body); font-weight: 400; font-size: var(--step-0); color: var(--muted); margin-top: 0.4rem; }
+.feat-text p { max-width: 36rem; }
+.shot { margin: 0; display: grid; gap: 0.5rem; min-width: 0; }
+.shot img { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); }
+.shot figcaption { font-size: var(--step--1); color: var(--muted); }
+
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.facts div { padding: 0.85rem 1rem; display: grid; gap: 0.15rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; }
+.facts dt { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.facts dl, dl.facts { margin: 0; }
+
+.features { display: grid; gap: 1.25rem 2.5rem; grid-template-columns: minmax(0, 1fr); padding: 0; margin: 0; list-style: none; }
+@media (min-width: 720px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.features li { display: grid; gap: 0.3rem; padding-left: 1rem; border-left: 2px solid var(--line); }
+.features h3 { font-size: var(--step-0); font-weight: 600; font-family: var(--font-body); }
+.features p { color: var(--muted); font-size: 0.95rem; }
+.judges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.25rem; }
+.judges span { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 3px; border: 1px solid var(--line); }
+.judges .p { color: var(--hit); border-color: currentColor; }
+.bars { display: flex; gap: 3px; margin-top: 0.35rem; }
+.bars i { flex: 1; height: 12px; border-radius: 2px; background: var(--hit); }
+.bars i.mid { background: color-mix(in srgb, var(--hit) 45%, #e0a526); }
+.bars i.low { background: #d8573f; }
+.bars-cap { font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); }
+
+.history { display: grid; gap: 1rem; }
+.history ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+.history li { display: grid; gap: 0.45rem; min-width: 0; }
+.history img { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; border: 1px solid var(--line); }
+.history time { font-family: var(--font-mono); font-size: var(--step--1); color: var(--note); font-weight: 500; }
+.history p { font-size: 0.92rem; color: var(--muted); }
+
+.fair { display: grid; gap: 0.5rem; padding: 1.25rem 1.25rem; background: var(--note-soft); border-radius: 6px; }
+.fair p { max-width: 52rem; }
+
+.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.95rem; border-radius: 5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.btn.primary { background: var(--note); border-color: var(--note); color: #fff; }
+.btn:hover { border-color: var(--note); }
+.btn:focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
+
+/* Work lists */
+.work { padding-block: 3rem 0.5rem; display: grid; gap: 1.25rem; border-top: 1px solid var(--line); margin-top: 2.5rem; }
+.work > header { display: grid; gap: 0.35rem; }
+.work h2 { font-size: var(--step-2); font-weight: 700; }
+.work > header p { color: var(--muted); max-width: 40rem; }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row { display: grid; gap: 0.35rem 2rem; padding-block: 1.25rem; border-bottom: 1px solid var(--line); grid-template-columns: minmax(0, 1fr); }
+.row:first-child { border-top: 1px solid var(--line); }
+@media (min-width: 760px) { .row { grid-template-columns: 9rem minmax(0, 1fr) auto; align-items: baseline; } }
+.row .when { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); font-variant-numeric: tabular-nums; }
+.row .body { display: grid; gap: 0.3rem; min-width: 0; }
+.row h3 { font-size: var(--step-1); font-weight: 600; }
+.row .ctx { font-size: var(--step--1); color: var(--muted); font-family: var(--font-mono); }
+.row p { max-width: 42rem; }
+.row .go { display: flex; gap: 1rem; font-size: 0.92rem; white-space: nowrap; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+.tags span { font-size: 0.72rem; font-family: var(--font-mono); color: var(--muted); border: 1px solid var(--line); padding: 0.05rem 0.4rem; border-radius: 3px; }
+.small { color: var(--muted); font-size: 0.95rem; padding-top: 0.5rem; }
+
+footer { padding-block: 3rem 3rem; color: var(--muted); font-size: var(--step--1); font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<main>
+  <div class="wrap">
+    <section class="intro" aria-labelledby="name">
+      <p class="eyebrow">11th grade · Georgia</p>
+      <h1 id="name">Ryan Abourjeili</h1>
+      <p class="lede">I build mixed-reality apps and interactive websites, usually to teach something or to show how it works. Right now that means a piano trainer for the Meta Quest 3.</p>
+      <div class="links">
+        <a href="https://github.com/ryan-abou">github.com/ryan-abou</a>
+        <span>Unity · C# · Python · JavaScript · three.js</span>
+      </div>
+    </section>
+
+    <div class="keys" aria-hidden="true"><svg id="keys" viewBox="0 0 1040 86" preserveAspectRatio="xMidYMid meet"></svg></div>
+
+    <section class="featured" aria-labelledby="pg">
+      <div class="feat-top">
+        <div class="feat-text">
+          <p class="eyebrow">Featured project</p>
+          <h2 id="pg">PianoGlass<small>A mixed-reality piano trainer for Meta Quest 3</small></h2>
+          <p>You sit at a real piano and the headset shows notes falling onto your real keys. The keyboard plugs into the headset over USB MIDI, so the app knows exactly which key you pressed and when.</p>
+          <p>That is the point of it. A falling-notes video can't tell you that you played D instead of D♯, or that bar 9 is where you keep falling apart. PianoGlass can, while you play.</p>
+          <div class="cta">
+            <a class="btn primary" href="https://github.com/ryan-abou/pianoglass">See the code on GitHub</a>
+          </div>
+        </div>
+        <figure class="shot">
+          <img src="img/hero.jpg" alt="View through the headset: blue falling notes land on a real piano's keys, with a green bar on the key just played and a calibration panel showing key width 23.1 mm against an expected 23.5." width="1280" height="720">
+          <figcaption>Through the headset, November 7. The green bar is a note hit on time. The panel checks that the virtual keys line up with the real ones, to the millimetre.</figcaption>
+        </figure>
+      </div>
+
+      <dl class="facts">
+        <div><dt>Headset</dt><dd>Meta Quest 3</dd></div>
+        <div><dt>Built with</dt><dd>Unity 6 · C#</dd></div>
+        <div><dt>Started</dt><dd>Sep 7, 2026</dd></div>
+        <div><dt>Commits</dt><dd>515</dd></div>
+        <div><dt>Test builds</dt><dd>12 milestones</dd></div>
+        <div><dt>Status</dt><dd>User study next</dd></div>
+      </dl>
+
+      <ul class="features">
+        <li>
+          <h3>Wrong-note feedback</h3>
+          <p>Play D instead of D♯ and the key turns red, with the note the song wanted.</p>
+        </li>
+        <li>
+          <h3>Timing judgements</h3>
+          <p>Every note is judged and shows how early or late you were, in milliseconds.</p>
+          <div class="judges" aria-label="Judgement grades"><span class="p">Perfect</span><span>Great</span><span>Good</span><span>Miss</span></div>
+        </li>
+        <li>
+          <h3>Results by bar</h3>
+          <p>After each try, a results card colours one box per bar by how well you played it, then suggests what to work on, like looping bar 9.</p>
+          <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i class="mid"></i><i></i><i></i><i></i><i></i><i class="low"></i><i class="mid"></i><i></i><i></i></div>
+          <span class="bars-cap">Example: one box per bar, bar 9 needs work</span>
+        </li>
+        <li>
+          <h3>Practice tools</h3>
+          <p>Slow tempo, metronome, bar loops, one hand at a time, wait mode, and memory fade, which hides the notes as you learn the song.</p>
+        </li>
+      </ul>
+
+      <div class="history">
+        <p class="eyebrow">How it got here</p>
+        <ol>
+          <li><img src="img/t1.jpg" alt="A flat virtual keyboard in an empty grey room with blue notes falling." loading="lazy" width="640" height="360"><time datetime="2026-09-14">Sep 14</time><p>First playable song, on a virtual keyboard.</p></li>
+          <li><img src="img/t2.jpg" alt="Passthrough view of a real piano with notes falling onto it and calibration numbers above." loading="lazy" width="640" height="360"><time datetime="2026-10-15">Oct 15</time><p>Calibrated keys that line up with the real piano.</p></li>
+          <li><img src="img/t3.jpg" alt="Note highway grid over the real keys, a green bar on the key being played." loading="lazy" width="640" height="360"><time datetime="2026-11-03">Nov 3</time><p>Note highway, coloured by how well each note was hit.</p></li>
+          <li><img src="img/t4.jpg" alt="A hand on the real keys under a falling note, with a glass-style panel above." loading="lazy" width="640" height="360"><time datetime="2026-11-05">Nov 5</time><p>Live score and a metronome while you play.</p></li>
+        </ol>
+      </div>
+
+      <div class="fair">
+        <p class="eyebrow">Science fair</p>
+        <p>PianoGlass is a team science fair entry with Tushar Chatterjee, in Technology Enhances the Arts. The research question: does an app that listens to what a beginner plays and corrects them in real time help them learn a passage more accurately than a standard falling-notes app? A usability study with five beginner pianists will test it.</p>
+      </div>
+    </section>
+
+    <section class="work" aria-labelledby="sites">
+      <header>
+        <h2 id="sites">Interactive sites</h2>
+        <p>Class projects I turned into websites. Each one is live.</p>
+      </header>
+      <ul class="rows">
+        <li class="row">
+          <span class="when">Nov 2026</span>
+          <div class="body">
+            <h3>Angle-Pin Launcher Lab</h3>
+            <span class="ctx">AP Physics 1</span>
+            <p>A 3D simulation of a water balloon slingshot, before and after our group's modification. It tracks forces and energy live and fires 20 shots from each launcher to compare accuracy.</p>
+            <div class="tags"><span>three.js</span><span>projectile motion</span><span>energy</span></div>
+          </div>
+          <div class="go"><a href="https://ryan-abou.github.io/angle-pin-launcher-lab/">Visit site</a><a href="https://github.com/ryan-abou/angle-pin-launcher-lab">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">Nov 2026</span>
+          <div class="body">
+            <h3>Turning Outward</h3>
+            <span class="ctx">AP Lang · team of 4</span>
+            <p>A virtual museum on the right to mental health, with a lobby and five galleries. I built the site and curated the gallery on mental health and social media.</p>
+            <div class="tags"><span>JavaScript</span><span>museum layout</span></div>
+          </div>
+          <div class="go"><a href="https://ryan-abou.github.io/mental-health-museum/">Visit site</a><a href="https://github.com/ryan-abou/mental-health-museum">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">May 2026</span>
+          <div class="body">
+            <h3>Game Theory and Algebra II</h3>
+            <span class="ctx">Algebra II</span>
+            <p>A site that connects game theory to the algebra behind it.</p>
+            <div class="tags"><span>HTML</span><span>math</span></div>
+          </div>
+          <div class="go"><a href="https://ryan-abou.github.io/game-theory-project/">Visit site</a><a href="https://github.com/ryan-abou/game-theory-project">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">Feb 2026</span>
+          <div class="body">
+            <h3>Things Fall Apart</h3>
+            <span class="ctx">English</span>
+            <p>An analysis of theme in Chinua Achebe's novel.</p>
+            <div class="tags"><span>HTML</span><span>literary analysis</span></div>
+          </div>
+          <div class="go"><a href="https://ryan-abou.github.io/things-fall-apart-analysis/">Visit site</a><a href="https://github.com/ryan-abou/things-fall-apart-analysis">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">Feb 2026</span>
+          <div class="body">
+            <h3>The Other Wes Moore</h3>
+            <span class="ctx">English</span>
+            <p>An analysis of racism in Wes Moore's book.</p>
+            <div class="tags"><span>HTML</span><span>literary analysis</span></div>
+          </div>
+          <div class="go"><a href="https://ryan-abou.github.io/racism-in-other-wes-moore/">Visit site</a><a href="https://github.com/ryan-abou/racism-in-other-wes-moore">Code</a></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="work" aria-labelledby="ai">
+      <header>
+        <h2 id="ai">AI and Python</h2>
+        <p>From my AI class and my own experiments.</p>
+      </header>
+      <ul class="rows">
+        <li class="row">
+          <span class="when">Oct 2026</span>
+          <div class="body">
+            <h3>Python Picture Lab</h3>
+            <span class="ctx">AI class · teaching tool</span>
+            <p>A Python port of the AP CS A Picture Lab, built on plain numpy arrays so students see how an image is stored before they start on machine learning. Includes a pixel-grid inspector notebook and a desktop app.</p>
+            <div class="tags"><span>numpy</span><span>Jupyter</span><span>Tkinter</span></div>
+          </div>
+          <div class="go"><a href="https://github.com/ryan-abou/Python_Picture_Lab">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">May 2026</span>
+          <div class="body">
+            <h3>YOLOv8 People Counter</h3>
+            <span class="ctx">Computer vision</span>
+            <p>Detects and counts people in an image, draws a box around each one and overlays the total.</p>
+            <div class="tags"><span>YOLOv8</span><span>OpenCV</span></div>
+          </div>
+          <div class="go"><a href="https://github.com/ryan-abou/yolov8-people-counter">Code</a></div>
+        </li>
+        <li class="row">
+          <span class="when">Dec 2025</span>
+          <div class="body">
+            <h3>AI Web Summarizer</h3>
+            <span class="ctx">LLM tools</span>
+            <p>Loads any webpage from a URL, pulls out the content and writes a short summary with a language model.</p>
+            <div class="tags"><span>LangChain</span><span>LLM</span></div>
+          </div>
+          <div class="go"><a href="https://github.com/ryan-abou/ai-web-summarizer">Code</a></div>
+        </li>
+      </ul>
+      <p class="small">Smaller things: a <a href="https://github.com/ryan-abou/sigmoid-neuron">sigmoid neuron</a> from scratch and <a href="https://github.com/ryan-abou/SnakeGame">Snake</a> in Python turtle graphics.</p>
+    </section>
+
+    <footer>Updated November 2026 · <a href="https://github.com/ryan-abou">github.com/ryan-abou</a></footer>
+  </div>
+</main>
+
+<script>
+(function () {
+  var svg = document.getElementById('keys');
+  if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var W = 20, H = 60, top = 26, n = 52; // 52 white keys, A0 to C8
+  function el(name, attrs) { var e = document.createElementNS(NS, name); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  // White-key letters from A0: A B C D E F G repeating. Black key after A, C, D, F, G (not after B or E).
+  var letters = 'ABCDEFG';
+  var litWhite = 23; // C4, middle C
+  var g = el('g', {});
+  for (var i = 0; i < n; i++) {
+    g.appendChild(el('rect', { x: i * W, y: top, width: W, height: H, rx: 1.5, 'class': i === litWhite ? 'w lit' : 'w' }));
+  }
+  for (var j = 0; j < n - 1; j++) {
+    var L = letters[j % 7];
+    if (L === 'B' || L === 'E') continue;
+    g.appendChild(el('rect', { x: j * W + W * 0.68, y: top, width: W * 0.64, height: H * 0.62, rx: 1, 'class': 'b' }));
+  }
+  svg.appendChild(g);
+  svg.appendChild(el('rect', { x: litWhite * W + 4, y: 2, width: W - 8, height: 22, rx: 2, 'class': 'fall' }));
+  svg.appendChild(el('rect', { x: litWhite * W + 2, y: top - 3, width: W - 4, height: 2.5, rx: 1, 'class': 'judge' }));
+})();
+</script>
+
+</body>
+</html>
