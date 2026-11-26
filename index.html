@@ -8,363 +8,811 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one column that opens on a lit piano key, then the featured project with its build history, then two lists of shorter work. */
+/* Layout: a night-time stage. The hero is a live note highway playing onto a keyboard; scrolling plays through PianoGlass's story (statement, pinned build history, features), then a sideways gallery of sites and a list of AI work. */
 :root {
-  --paper: #f1f3f7;
-  --surface: #ffffff;
-  --ink: #101828;
-  --muted: #586378;
-  --line: #d8dde6;
-  --note: #2a78db;
-  --note-soft: #2a78db1f;
-  --hit: #13995a;
-  --key-white: #ffffff;
-  --key-black: #1b2333;
-  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-  --step--1: 0.8125rem;
-  --step-0: 1rem;
-  --step-1: 1.25rem;
-  --step-2: 1.75rem;
-  --step-3: clamp(2.25rem, 5vw + 1rem, 3.75rem);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0b111b; --surface: #121a27; --ink: #e4eaf3; --muted: #94a1b5; --line: #222d3d;
-    --note: #5ea3f6; --note-soft: #5ea3f624; --hit: #3cc985; --key-white: #d9e0ea; --key-black: #0b111b;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #0b111b; --surface: #121a27; --ink: #e4eaf3; --muted: #94a1b5; --line: #222d3d;
-  --note: #5ea3f6; --note-soft: #5ea3f624; --hit: #3cc985; --key-white: #d9e0ea; --key-black: #0b111b;
+  --bg: #070b14;
+  --bg-2: #0c1322;
+  --ink: #e9eef6;
+  --muted: #8f9bb0;
+  --faint: #5b667a;
+  --line: rgba(255, 255, 255, 0.09);
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-hi: rgba(255, 255, 255, 0.14);
+  --note: #4f9dff;
+  --note-2: #9a8cff;
+  --hit: #34d38d;
+  --miss: #ff6b57;
+  --warm: #f2b544;
+  --font-display: "Archivo", "Arial Black", "Helvetica Neue", sans-serif;
+  --font-body: "Geist", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Consolas, monospace;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
   color-scheme: dark;
 }
-
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
-  background: var(--paper);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: var(--step-0);
+  font-size: 1rem;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
-.wrap {
-  max-width: 68rem;
-  margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-}
-a { color: var(--note); text-underline-offset: 3px; }
-a:focus-visible { outline: 2px solid var(--note); outline-offset: 3px; border-radius: 2px; }
-h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+::selection { background: var(--note); color: #fff; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--note); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); text-wrap: balance; line-height: 1; }
 p { margin: 0; }
-.mono { font-family: var(--font-mono); }
+img { display: block; max-width: 100%; }
+.wrap {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.eyebrow::before { content: ""; width: 1.5rem; height: 1px; background: currentColor; opacity: .6; }
+.glass {
+  background: linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.02) 40%, rgba(255,255,255,.035));
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 20px 60px -30px rgba(0,0,0,.8);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
-/* Intro */
-.intro { padding-block: 3.5rem 1.5rem; display: grid; gap: 1.25rem; }
-.intro h1 { font-size: var(--step-3); font-weight: 700; letter-spacing: -0.02em; }
-.intro .lede { font-size: var(--step-1); max-width: 40rem; color: var(--ink); line-height: 1.45; }
-.intro .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: var(--step--1); font-family: var(--font-mono); }
-.intro .links span { color: var(--muted); }
-
-/* Keyboard strip */
-.keys { padding-block: 0.5rem 0; }
-.keys svg { display: block; width: 100%; height: auto; }
-.keys .w { fill: var(--key-white); stroke: var(--line); stroke-width: 0.6; }
-.keys .b { fill: var(--key-black); }
-.keys .lit { fill: var(--note); }
-.keys .fall { fill: var(--note); opacity: 0.85; }
-.keys .judge { fill: var(--hit); }
-@media (prefers-reduced-motion: no-preference) {
-  .keys .fall { animation: drop 2.4s cubic-bezier(.45,0,.75,1) infinite; }
-  @keyframes drop { 0% { transform: translateY(-46px); opacity: 0; } 15% { opacity: .85; } 80% { transform: translateY(0); opacity: .85; } 100% { transform: translateY(0); opacity: 0; } }
+/* Top bar */
+.progress { position: fixed; inset: 0 0 auto; height: 2px; z-index: 60; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--note), var(--hit)); }
+.nav {
+  position: fixed; z-index: 50;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 0.25rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  max-width: calc(100% - 24px);
 }
+.nav a { text-decoration: none; font-size: 0.85rem; padding: 0.4rem 0.85rem; border-radius: 999px; color: var(--muted); white-space: nowrap; transition: color .2s, background .2s; }
+.nav a:hover { color: var(--ink); background: rgba(255,255,255,.06); }
+.nav .mono { font-family: var(--font-display); font-weight: 800; font-stretch: 115%; color: var(--ink); letter-spacing: .02em; }
+@media (max-width: 520px) { .nav .hide-sm { display: none; } }
 
-/* Featured */
-.featured { padding-block: 3rem 1rem; display: grid; gap: 2.5rem; border-top: 1px solid var(--line); }
-.feat-top { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 860px) { .feat-top { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; } }
-.feat-text { display: grid; gap: 1rem; min-width: 0; }
-.feat-text h2 { font-size: var(--step-2); font-weight: 700; }
-.feat-text h2 small { display: block; font-family: var(--font-body); font-weight: 400; font-size: var(--step-0); color: var(--muted); margin-top: 0.4rem; }
-.feat-text p { max-width: 36rem; }
-.shot { margin: 0; display: grid; gap: 0.5rem; min-width: 0; }
-.shot img { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); }
-.shot figcaption { font-size: var(--step--1); color: var(--muted); }
+/* Hero */
+.hero { position: relative; isolation: isolate; overflow: hidden; margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+.hero-stage { position: absolute; inset: 0; z-index: -1; }
+.hero-stage canvas { width: 100%; height: 100%; display: block; }
+.hero-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, var(--bg) 0%, rgba(7,11,20,.82) 28%, rgba(7,11,20,.2) 62%, rgba(7,11,20,0) 100%); }
+.hero-copy { padding-block: 8.5rem 15rem; display: grid; gap: 1.6rem; }
+@media (min-width: 900px) { .hero-copy { padding-block: 10rem 17rem; } }
+.hero h1 {
+  font-weight: 800; font-stretch: 118%;
+  font-size: clamp(3.1rem, 10.5vw, 9.25rem);
+  letter-spacing: -0.035em; line-height: .9;
+}
+.hero h1 .line { display: block; }
+.hero h1 .line + .line { color: transparent; -webkit-text-stroke: 1.5px rgba(233,238,246,.85); }
+.hero .lede { font-size: clamp(1.1rem, 1.2vw + .8rem, 1.45rem); max-width: 36rem; color: #c9d2e0; line-height: 1.45; }
+.hero .lede b { color: var(--ink); font-weight: 600; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.btn { display: inline-flex; align-items: center; gap: .55rem; padding: .8rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 500; font-size: .95rem; transition: transform .3s var(--ease-out), background .2s, border-color .2s; }
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn.primary:hover { transform: translateY(-2px); }
+.btn.ghost { border: 1px solid var(--glass-hi); color: var(--ink); }
+.btn.ghost:hover { border-color: var(--ink); }
+.btn svg { width: 1rem; height: 1rem; }
+.now-playing { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); display: flex; align-items: center; gap: .5rem; letter-spacing: .04em; }
+.now-playing i { width: 6px; height: 6px; border-radius: 50%; background: var(--hit); box-shadow: 0 0 10px var(--hit); flex: none; }
+.hero-stage::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(7,11,20,.78) 0%, rgba(7,11,20,.45) 38%, rgba(7,11,20,0) 68%); }
+@media (max-width: 700px) { .hero-stage::before { background: linear-gradient(90deg, rgba(7,11,20,.6), rgba(7,11,20,.35)); } }
 
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
-.facts div { padding: 0.85rem 1rem; display: grid; gap: 0.15rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; }
-.facts dt { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-.facts dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-.facts dl, dl.facts { margin: 0; }
+/* Statement */
+.statement { padding-block: clamp(6rem, 14vw, 11rem) clamp(4rem, 9vw, 7rem); }
+.statement .eyebrow { margin-bottom: 2rem; }
+.statement p.big {
+  font-family: var(--font-display); font-weight: 600; font-stretch: 100%;
+  font-size: clamp(1.9rem, 4.2vw + .5rem, 4.1rem);
+  line-height: 1.08; letter-spacing: -0.02em; max-width: 22ch;
+}
+.statement .k-miss { color: var(--miss); }
+.statement .k-note { color: var(--note); }
+.statement .k-bar { color: var(--warm); }
 
-.features { display: grid; gap: 1.25rem 2.5rem; grid-template-columns: minmax(0, 1fr); padding: 0; margin: 0; list-style: none; }
-@media (min-width: 720px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.features li { display: grid; gap: 0.3rem; padding-left: 1rem; border-left: 2px solid var(--line); }
-.features h3 { font-size: var(--step-0); font-weight: 600; font-family: var(--font-body); }
-.features p { color: var(--muted); font-size: 0.95rem; }
-.judges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.25rem; }
-.judges span { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 3px; border: 1px solid var(--line); }
-.judges .p { color: var(--hit); border-color: currentColor; }
-.bars { display: flex; gap: 3px; margin-top: 0.35rem; }
-.bars i { flex: 1; height: 12px; border-radius: 2px; background: var(--hit); }
-.bars i.mid { background: color-mix(in srgb, var(--hit) 45%, #e0a526); }
-.bars i.low { background: #d8573f; }
-.bars-cap { font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); }
+/* PianoGlass intro */
+.pg { display: grid; gap: clamp(2rem, 5vw, 4.5rem); padding-bottom: clamp(4rem, 8vw, 6rem); }
+.pg-top { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 920px) { .pg-top { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+.pg-text { display: grid; gap: 1.2rem; min-width: 0; }
+.pg-text h2 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 800; font-stretch: 112%; letter-spacing: -0.03em; }
+.pg-text .sub { font-family: var(--font-mono); font-size: .85rem; color: var(--note); }
+.pg-text p { color: #c3ccda; max-width: 34rem; }
+.headset { position: relative; border-radius: 22px; padding: 10px; min-width: 0; }
+.headset .viewport { position: relative; overflow: hidden; border-radius: 14px; aspect-ratio: 16 / 9; background: #0a1020; }
+.headset img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 60%; }
+.headset .tag { position: absolute; left: 1rem; bottom: 1rem; font-family: var(--font-mono); font-size: .72rem; padding: .3rem .6rem; border-radius: 6px; background: rgba(7,11,20,.7); color: var(--ink); }
+.headset figcaption { font-size: .82rem; color: var(--muted); padding: .7rem .4rem .2rem; }
 
-.history { display: grid; gap: 1rem; }
-.history ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
-.history li { display: grid; gap: 0.45rem; min-width: 0; }
-.history img { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; border: 1px solid var(--line); }
-.history time { font-family: var(--font-mono); font-size: var(--step--1); color: var(--note); font-weight: 500; }
-.history p { font-size: 0.92rem; color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin: 0; }
+.facts div { background: var(--bg); padding: 1.3rem 1.2rem; display: grid; gap: .3rem; align-content: start; }
+.facts dt { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 0; font-family: var(--font-display); font-weight: 700; font-stretch: 110%; font-size: clamp(1.5rem, 2.4vw, 2.1rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.facts dd small { font-family: var(--font-body); font-weight: 400; font-size: .8rem; color: var(--muted); display: block; margin-top: .25rem; font-stretch: 100%; }
 
-.fair { display: grid; gap: 0.5rem; padding: 1.25rem 1.25rem; background: var(--note-soft); border-radius: 6px; }
-.fair p { max-width: 52rem; }
+/* Build history */
+.history { position: relative; }
+.history-pin { padding-block: 5.5rem 3rem; display: grid; gap: 1.75rem; }
+.history-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 2rem; }
+.history-head h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 800; font-stretch: 110%; letter-spacing: -0.025em; max-width: 16ch; }
+.history-head p { color: var(--muted); font-size: .9rem; max-width: 26rem; }
+.frames { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.frames li { min-width: 0; }
+.frames figure { margin: 0; display: grid; gap: .8rem; }
+.frames .shot { overflow: hidden; border-radius: 14px; border: 1px solid var(--line); aspect-ratio: 16 / 9; background: #0a1020; }
+.frames .shot img { width: 100%; height: 100%; object-fit: cover; }
+.frames figcaption { display: grid; gap: .25rem; }
+.frames time { font-family: var(--font-display); font-weight: 700; font-stretch: 115%; font-size: 1.15rem; }
+.frames .commits { font-family: var(--font-mono); font-size: .75rem; color: var(--note); }
+.frames .what { color: #c3ccda; font-size: .95rem; }
+.rail { display: none; }
+.history-note { font-size: .8rem; color: var(--faint); font-family: var(--font-mono); }
 
-.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.95rem; border-radius: 5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
-.btn.primary { background: var(--note); border-color: var(--note); color: #fff; }
-.btn:hover { border-color: var(--note); }
-.btn:focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
+/* Motion layout for build history */
+.motion .history-body { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .motion .history-body { grid-template-columns: 13rem minmax(0, 1fr); gap: 3rem; } }
+.motion .frames { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; width: min(100%, calc((100svh - 17rem) * 1.7778)); }
+.motion .frames li { grid-area: 1 / 1; background: var(--bg); will-change: clip-path; }
+.motion .frames figcaption { grid-template-columns: auto 1fr; column-gap: 1rem; align-items: baseline; }
+.motion .frames .what { grid-column: 1 / -1; }
+.motion .rail { display: flex; list-style: none; margin: 0; padding: 0; gap: .25rem; overflow-x: auto; scrollbar-width: none; }
+@media (min-width: 900px) { .motion .rail { flex-direction: column; gap: 0; overflow: visible; position: relative; padding-left: 1.1rem; } }
+.rail::before { content: ""; position: absolute; left: 0; top: .9rem; bottom: .9rem; width: 2px; background: var(--line); display: none; }
+.rail .fill { position: absolute; left: 0; top: .9rem; width: 2px; height: calc(100% - 1.8rem); background: linear-gradient(var(--note), var(--hit)); transform-origin: 50% 0; transform: scaleY(0); display: none; }
+@media (min-width: 900px) { .rail::before, .rail .fill { display: block; } }
+.rail button { all: unset; cursor: pointer; display: grid; gap: .1rem; padding: .45rem .7rem; border-radius: 10px; color: var(--faint); transition: color .3s, background .3s; flex: none; }
+.rail button:focus-visible { outline: 2px solid var(--note); }
+.rail button b { font-family: var(--font-display); font-weight: 700; font-stretch: 112%; font-size: 1.05rem; }
+.rail button span { font-family: var(--font-mono); font-size: .7rem; }
+.rail button.on { color: var(--ink); background: rgba(255,255,255,.05); }
+.rail button.on span { color: var(--note); }
+.counter { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); }
+.counter b { font-family: var(--font-display); font-stretch: 115%; font-size: 1.6rem; color: var(--ink); font-variant-numeric: tabular-nums; margin-right: .35rem; }
 
-/* Work lists */
-.work { padding-block: 3rem 0.5rem; display: grid; gap: 1.25rem; border-top: 1px solid var(--line); margin-top: 2.5rem; }
-.work > header { display: grid; gap: 0.35rem; }
-.work h2 { font-size: var(--step-2); font-weight: 700; }
-.work > header p { color: var(--muted); max-width: 40rem; }
+/* Features */
+.features { padding-block: clamp(5rem, 10vw, 8rem); display: grid; gap: 2.5rem; }
+.features h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 800; font-stretch: 110%; letter-spacing: -0.025em; max-width: 18ch; }
+.cards { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 760px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card { border-radius: 20px; padding: 1.5rem; display: grid; gap: 1rem; align-content: start; min-width: 0; }
+.card h3 { font-size: 1.35rem; font-weight: 700; font-stretch: 108%; letter-spacing: -0.01em; }
+.card p { color: #b9c3d3; font-size: .95rem; }
+.demo { border-radius: 14px; background: rgba(0,0,0,.28); border: 1px solid var(--line); padding: 1.1rem; min-height: 9.5rem; display: grid; align-content: center; gap: .8rem; overflow: hidden; }
+.demo-cap { font-family: var(--font-mono); font-size: .7rem; color: var(--faint); }
+
+/* demo: wrong note */
+.octave { width: 100%; max-width: 20rem; height: auto; margin: 0 auto; display: block; }
+.octave .w { fill: #e3e9f2; stroke: #0a0f1a; stroke-width: 1.5; }
+.octave .b { fill: #111827; }
+.octave .played { fill: var(--miss); }
+.octave .wanted { fill: #111827; stroke: var(--note); stroke-width: 3; }
+.motion .octave .played { animation: miss 2.4s ease-in-out infinite; }
+.motion .octave .wanted { animation: want 2.4s ease-in-out infinite; }
+@keyframes miss { 0%, 18% { fill: #e3e9f2; } 24%, 70% { fill: var(--miss); } 82%, 100% { fill: #e3e9f2; } }
+@keyframes want { 0%, 18% { stroke-opacity: 0; } 30%, 80% { stroke-opacity: 1; } 92%, 100% { stroke-opacity: 0; } }
+.verdict { display: flex; justify-content: center; gap: 1rem; font-family: var(--font-mono); font-size: .8rem; }
+.verdict .p { color: var(--miss); }
+.verdict .w { color: var(--note); }
+
+/* demo: timing */
+.meter { position: relative; height: 2.6rem; }
+.meter .zones { position: absolute; inset: .9rem 0; display: grid; grid-template-columns: 1fr 1.4fr 1.6fr 1fr 1.6fr 1.4fr 1fr; border-radius: 6px; overflow: hidden; }
+.meter .zones i { display: block; }
+.meter .z-m { background: rgba(255,107,87,.22); }
+.meter .z-g { background: rgba(242,181,68,.22); }
+.meter .z-gr { background: rgba(79,157,255,.28); }
+.meter .z-p { background: rgba(52,211,141,.45); }
+.meter .center { position: absolute; left: 50%; top: .4rem; bottom: .4rem; width: 2px; background: var(--ink); opacity: .7; transform: translateX(-50%); }
+.meter .dot { position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 4px rgba(255,255,255,.12), 0 0 18px rgba(255,255,255,.4); transition: left .5s var(--ease-out); }
+.meter-labels { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: .65rem; color: var(--faint); }
+.readout { display: flex; align-items: baseline; justify-content: center; gap: .75rem; }
+.readout .j { font-family: var(--font-display); font-weight: 800; font-stretch: 120%; font-size: 1.35rem; letter-spacing: .02em; text-transform: uppercase; }
+.readout .ms { font-family: var(--font-mono); font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* demo: bars */
+.barrow { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+.barrow i { height: 2.2rem; border-radius: 4px; background: var(--hit); display: grid; place-items: end center; font-style: normal; font-family: var(--font-mono); font-size: .6rem; color: rgba(7,11,20,.75); padding-bottom: 2px; }
+.barrow i.mid { background: var(--warm); }
+.barrow i.low { background: var(--miss); color: #fff; }
+.suggest { display: inline-flex; align-items: center; gap: .6rem; justify-self: start; font-size: .82rem; padding: .45rem .5rem .45rem .8rem; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); }
+.suggest span { padding: .2rem .6rem; border-radius: 999px; background: var(--note); color: #fff; font-size: .75rem; }
+
+/* demo: practice */
+.tempo { display: grid; gap: .5rem; }
+.tempo-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: .75rem; color: var(--muted); }
+.tempo-top b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.slider { position: relative; height: 6px; border-radius: 6px; background: rgba(255,255,255,.1); }
+.slider .fill { position: absolute; inset: 0 auto 0 0; width: 100%; border-radius: 6px; background: var(--note); transition: width .8s var(--ease-out); }
+.slider .knob { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--ink); left: 100%; transition: left .8s var(--ease-out); }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chips span { font-size: .75rem; padding: .3rem .65rem; border-radius: 999px; border: 1px solid var(--line); color: #c3ccda; transition: background .3s, color .3s, border-color .3s; }
+.chips span.on { background: rgba(79,157,255,.16); border-color: rgba(79,157,255,.5); color: var(--ink); }
+
+/* Science fair */
+.fair { padding-block: clamp(3rem, 7vw, 5rem); }
+.fair-panel { border-radius: 28px; padding: clamp(1.5rem, 4vw, 3.25rem); display: grid; gap: 2rem; position: relative; overflow: hidden; }
+.fair-panel::before { content: ""; position: absolute; width: 38rem; height: 38rem; right: -14rem; top: -18rem; border-radius: 50%; background: radial-gradient(closest-side, rgba(79,157,255,.22), transparent); pointer-events: none; }
+.fair-panel q { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.45rem, 2.6vw + .4rem, 2.5rem); line-height: 1.15; letter-spacing: -0.015em; quotes: "\201C" "\201D"; max-width: 30ch; display: block; position: relative; }
+.fair-meta { display: grid; gap: 1.25rem 2rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin: 0; position: relative; }
+.fair-meta dt { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+.fair-meta dd { margin: 0; font-size: .95rem; }
+
+/* Skills marquee */
+.marquee { overflow: hidden; border-block: 1px solid var(--line); padding-block: 1.4rem; margin-block: clamp(3rem, 7vw, 5rem) 0; }
+.marquee-track { display: flex; gap: 2.5rem; white-space: nowrap; width: max-content; font-family: var(--font-display); font-weight: 800; font-stretch: 120%; font-size: clamp(1.8rem, 4vw, 3.2rem); letter-spacing: -0.02em; }
+.marquee-track span { color: transparent; -webkit-text-stroke: 1px rgba(233,238,246,.35); }
+.marquee-track span:nth-child(3n+1) { color: var(--ink); -webkit-text-stroke: 0; }
+
+/* Sites gallery */
+.sites { padding-block: clamp(5rem, 9vw, 7rem) 2rem; }
+.sites-inner { display: grid; gap: 2.25rem; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 2rem; }
+.sec-head h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 800; font-stretch: 110%; letter-spacing: -0.025em; }
+.sec-head p { color: var(--muted); max-width: 28rem; font-size: .95rem; }
+.track { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+.site { border-radius: 20px; padding: .6rem; display: grid; gap: 0; min-width: 0; text-decoration: none; transition: border-color .3s; }
+.site:hover { border-color: var(--glass-hi); }
+.browser { border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #0a1020; }
+.browser .bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .7rem; background: rgba(255,255,255,.04); border-bottom: 1px solid var(--line); }
+.browser .bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.16); }
+.browser .bar span { margin-left: .5rem; font-family: var(--font-mono); font-size: .68rem; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.browser .view { aspect-ratio: 16 / 10; overflow: hidden; }
+.browser img { width: 100%; height: 115%; object-fit: cover; object-position: top; transition: transform .8s var(--ease-out); }
+.site:hover .browser img { transform: translateY(-6%); }
+.site-body { padding: 1.1rem .7rem .7rem; display: grid; gap: .45rem; }
+.site-body .ctx { font-family: var(--font-mono); font-size: .72rem; color: var(--note); }
+.site-body h3 { font-size: 1.4rem; font-weight: 700; font-stretch: 108%; letter-spacing: -0.01em; }
+.site-body p { color: #b9c3d3; font-size: .92rem; }
+.site-links { display: flex; gap: 1.2rem; margin-top: .4rem; font-size: .88rem; }
+.site-links a { text-decoration: none; color: var(--ink); border-bottom: 1px solid var(--glass-hi); padding-bottom: 1px; }
+.site-links a:hover { border-color: var(--ink); }
+/* sideways mode */
+.sideways { overflow: hidden; }
+.sideways .sites-inner { min-height: 100svh; align-content: center; padding-block: 5rem 2rem; }
+.sideways .track { display: flex; gap: 1.5rem; width: max-content; grid-template-columns: none; }
+.sideways .site { width: clamp(20rem, 38vw, 31rem); }
+
+/* AI list */
+.ai { padding-block: clamp(4rem, 8vw, 6rem) 2rem; display: grid; gap: 2rem; }
 .rows { list-style: none; margin: 0; padding: 0; }
-.row { display: grid; gap: 0.35rem 2rem; padding-block: 1.25rem; border-bottom: 1px solid var(--line); grid-template-columns: minmax(0, 1fr); }
-.row:first-child { border-top: 1px solid var(--line); }
-@media (min-width: 760px) { .row { grid-template-columns: 9rem minmax(0, 1fr) auto; align-items: baseline; } }
-.row .when { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); font-variant-numeric: tabular-nums; }
-.row .body { display: grid; gap: 0.3rem; min-width: 0; }
-.row h3 { font-size: var(--step-1); font-weight: 600; }
-.row .ctx { font-size: var(--step--1); color: var(--muted); font-family: var(--font-mono); }
-.row p { max-width: 42rem; }
-.row .go { display: flex; gap: 1rem; font-size: 0.92rem; white-space: nowrap; }
-.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
-.tags span { font-size: 0.72rem; font-family: var(--font-mono); color: var(--muted); border: 1px solid var(--line); padding: 0.05rem 0.4rem; border-radius: 3px; }
-.small { color: var(--muted); font-size: 0.95rem; padding-top: 0.5rem; }
+.row { position: relative; display: grid; gap: .5rem 2rem; padding-block: 1.6rem; grid-template-columns: minmax(0, 1fr); }
+.row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line); transform-origin: 0 50%; }
+.rows .row:last-child::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); }
+@media (min-width: 820px) { .row { grid-template-columns: 8rem minmax(0, 1fr) 11rem; align-items: baseline; } }
+.row .when { font-family: var(--font-mono); font-size: .78rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.row h3 { font-size: clamp(1.4rem, 2.2vw, 1.9rem); font-weight: 700; font-stretch: 110%; letter-spacing: -0.015em; transition: color .3s; }
+.row:hover h3 { color: var(--note); }
+.row .body { display: grid; gap: .45rem; min-width: 0; }
+.row p { color: #b9c3d3; max-width: 44rem; }
+.tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.tags span { font-family: var(--font-mono); font-size: .68rem; color: var(--muted); border: 1px solid var(--line); padding: .1rem .5rem; border-radius: 999px; }
+.row .go { justify-self: start; }
+@media (min-width: 820px) { .row .go { justify-self: end; } }
+.row .go a { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; font-size: .9rem; color: var(--ink); }
+.row .go a svg { width: .9rem; height: .9rem; transition: transform .3s var(--ease-out); }
+.row:hover .go a svg { transform: translate(3px, -3px); }
+.smaller { color: var(--muted); font-size: .92rem; }
+.smaller a { color: var(--ink); }
 
-footer { padding-block: 3rem 3rem; color: var(--muted); font-size: var(--step--1); font-family: var(--font-mono); }
+/* Footer */
+footer { padding-block: clamp(5rem, 10vw, 8rem) 3rem; display: grid; gap: 2rem; }
+footer .sign { font-family: var(--font-display); font-weight: 800; font-stretch: 120%; font-size: clamp(2.6rem, 9vw, 7.5rem); letter-spacing: -0.035em; line-height: .9; }
+footer .sign span { display: block; color: transparent; -webkit-text-stroke: 1.5px rgba(233,238,246,.5); }
+.foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-family: var(--font-mono); font-size: .78rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1.25rem; }
+.foot-row a { color: var(--ink); text-decoration: none; }
+
+/* Hide the hero name until its letters are split, only when motion runs */
+.motion.splitting .hero h1 { visibility: hidden; }
+.mask-line { overflow: hidden; padding-bottom: .04em; margin-bottom: -.04em; }
 </style>
 </head>
 <body>
-<main>
-  <div class="wrap">
-    <section class="intro" aria-labelledby="name">
-      <p class="eyebrow">11th grade · Georgia</p>
-      <h1 id="name">Ryan Abourjeili</h1>
-      <p class="lede">I build mixed-reality apps and interactive websites, usually to teach something or to show how it works. Right now that means a piano trainer for the Meta Quest 3.</p>
-      <div class="links">
-        <a href="https://github.com/ryan-abou">github.com/ryan-abou</a>
-        <span>Unity · C# · Python · JavaScript · three.js</span>
+<div class="progress" aria-hidden="true"></div>
+<nav class="nav glass" aria-label="Sections">
+  <a class="mono" href="#top">RA</a>
+  <a href="#pianoglass">PianoGlass</a>
+  <a href="#sites">Sites</a>
+  <a href="#ai">AI</a>
+  <a class="hide-sm" href="https://github.com/ryan-abou">GitHub</a>
+</nav>
+
+<main id="top">
+  <header class="hero">
+    <div class="hero-stage" aria-hidden="true"><canvas id="highway"></canvas></div>
+    <div class="wrap hero-copy">
+      <span class="eyebrow">11th grade · Georgia</span>
+      <h1 id="name"><span class="line">Ryan</span><span class="line">Abourjeili</span></h1>
+      <p class="lede">I build <b>mixed-reality apps</b> and <b>interactive websites</b>, usually to teach something or to show how it works. Right now that means a piano trainer for the Meta Quest 3.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#pianoglass">See PianoGlass
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn ghost" href="https://github.com/ryan-abou">github.com/ryan-abou</a>
       </div>
-    </section>
+      <div class="now-playing" aria-hidden="true"><i></i>Now playing below: Ode to Joy, 112 bpm</div>
+    </div>
+  </header>
 
-    <div class="keys" aria-hidden="true"><svg id="keys" viewBox="0 0 1040 86" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <section class="wrap statement" id="pianoglass" aria-label="Why PianoGlass exists">
+    <span class="eyebrow">Featured project</span>
+    <p class="big" id="statement">A falling-notes video can't tell you that you played <span class="k-miss">D</span> instead of <span class="k-note">D♯</span>, or that <span class="k-bar">bar 9</span> is where you keep falling apart. PianoGlass can, while you play.</p>
+  </section>
 
-    <section class="featured" aria-labelledby="pg">
-      <div class="feat-top">
-        <div class="feat-text">
-          <p class="eyebrow">Featured project</p>
-          <h2 id="pg">PianoGlass<small>A mixed-reality piano trainer for Meta Quest 3</small></h2>
-          <p>You sit at a real piano and the headset shows notes falling onto your real keys. The keyboard plugs into the headset over USB MIDI, so the app knows exactly which key you pressed and when.</p>
-          <p>That is the point of it. A falling-notes video can't tell you that you played D instead of D♯, or that bar 9 is where you keep falling apart. PianoGlass can, while you play.</p>
-          <div class="cta">
-            <a class="btn primary" href="https://github.com/ryan-abou/pianoglass">See the code on GitHub</a>
-          </div>
+  <section class="wrap pg" aria-labelledby="pg-title">
+    <div class="pg-top">
+      <div class="pg-text">
+        <span class="sub">Mixed reality · Meta Quest 3</span>
+        <h2 id="pg-title">PianoGlass</h2>
+        <p>You sit at a real piano and the headset shows notes falling onto your real keys. The keyboard plugs into the headset over USB MIDI, so the app knows exactly which key you pressed and when, and can judge every note.</p>
+        <p>The menus are styled after Apple's Liquid Glass. Every panel on this page borrows from them.</p>
+        <div class="hero-actions"><a class="btn ghost" href="https://github.com/ryan-abou/pianoglass">Code on GitHub</a></div>
+      </div>
+      <figure class="headset glass" style="margin:0">
+        <div class="viewport"><img id="pg-shot" src="img/f5.jpg" alt="View through the headset: blue falling notes land on a real piano's keys, a green bar on the key just played, and a panel showing the virtual keys measured at 23.1 mm against an expected 23.5 mm." width="1440" height="810"><span class="tag">Through the headset · Nov 7</span></div>
+        <figcaption>The green bar is a note hit on time. The panel checks that the virtual keys line up with the real ones, to the millimetre.</figcaption>
+      </figure>
+    </div>
+    <dl class="facts">
+      <div><dt>Commits</dt><dd><span data-count="515">515</span><small>since Sep 7, 2026</small></dd></div>
+      <div><dt>Milestone builds</dt><dd><span data-count="12">12</span><small>each tested on a real piano</small></dd></div>
+      <div><dt>Keys calibrated</dt><dd><span data-count="88">88</span><small>A0 to C8</small></dd></div>
+      <div><dt>Key width target</dt><dd><span data-count="23.5" data-dec="1">23.5</span> mm<small>measured live in the headset</small></dd></div>
+    </dl>
+  </section>
+
+  <section class="history" id="history" aria-labelledby="hist-title">
+    <div class="wrap history-pin">
+      <div class="history-head">
+        <div style="display:grid;gap:.9rem">
+          <span class="eyebrow">Build history</span>
+          <h2 id="hist-title">From a grey box to a real piano</h2>
         </div>
-        <figure class="shot">
-          <img src="img/hero.jpg" alt="View through the headset: blue falling notes land on a real piano's keys, with a green bar on the key just played and a calibration panel showing key width 23.1 mm against an expected 23.5." width="1280" height="720">
-          <figcaption>Through the headset, November 7. The green bar is a note hit on time. The panel checks that the virtual keys line up with the real ones, to the millimetre.</figcaption>
-        </figure>
+        <p class="counter" aria-hidden="true"><b id="commit-n">5</b>commits so far</p>
       </div>
-
-      <dl class="facts">
-        <div><dt>Headset</dt><dd>Meta Quest 3</dd></div>
-        <div><dt>Built with</dt><dd>Unity 6 · C#</dd></div>
-        <div><dt>Started</dt><dd>Sep 7, 2026</dd></div>
-        <div><dt>Commits</dt><dd>515</dd></div>
-        <div><dt>Test builds</dt><dd>12 milestones</dd></div>
-        <div><dt>Status</dt><dd>User study next</dd></div>
-      </dl>
-
-      <ul class="features">
-        <li>
-          <h3>Wrong-note feedback</h3>
-          <p>Play D instead of D♯ and the key turns red, with the note the song wanted.</p>
-        </li>
-        <li>
-          <h3>Timing judgements</h3>
-          <p>Every note is judged and shows how early or late you were, in milliseconds.</p>
-          <div class="judges" aria-label="Judgement grades"><span class="p">Perfect</span><span>Great</span><span>Good</span><span>Miss</span></div>
-        </li>
-        <li>
-          <h3>Results by bar</h3>
-          <p>After each try, a results card colours one box per bar by how well you played it, then suggests what to work on, like looping bar 9.</p>
-          <div class="bars" aria-hidden="true"><i></i><i></i><i></i><i class="mid"></i><i></i><i></i><i></i><i></i><i class="low"></i><i class="mid"></i><i></i><i></i></div>
-          <span class="bars-cap">Example: one box per bar, bar 9 needs work</span>
-        </li>
-        <li>
-          <h3>Practice tools</h3>
-          <p>Slow tempo, metronome, bar loops, one hand at a time, wait mode, and memory fade, which hides the notes as you learn the song.</p>
-        </li>
-      </ul>
-
-      <div class="history">
-        <p class="eyebrow">How it got here</p>
-        <ol>
-          <li><img src="img/t1.jpg" alt="A flat virtual keyboard in an empty grey room with blue notes falling." loading="lazy" width="640" height="360"><time datetime="2026-09-14">Sep 14</time><p>First playable song, on a virtual keyboard.</p></li>
-          <li><img src="img/t2.jpg" alt="Passthrough view of a real piano with notes falling onto it and calibration numbers above." loading="lazy" width="640" height="360"><time datetime="2026-10-15">Oct 15</time><p>Calibrated keys that line up with the real piano.</p></li>
-          <li><img src="img/t3.jpg" alt="Note highway grid over the real keys, a green bar on the key being played." loading="lazy" width="640" height="360"><time datetime="2026-11-03">Nov 3</time><p>Note highway, coloured by how well each note was hit.</p></li>
-          <li><img src="img/t4.jpg" alt="A hand on the real keys under a falling note, with a glass-style panel above." loading="lazy" width="640" height="360"><time datetime="2026-11-05">Nov 5</time><p>Live score and a metronome while you play.</p></li>
+      <div class="history-body">
+        <ol class="rail" id="rail" aria-hidden="true"></ol>
+        <ol class="frames" id="frames">
+          <li data-date="Sep 8" data-commits="5"><figure><div class="shot"><img src="img/f0.jpg" alt="An empty grey virtual room with a single box." width="1440" height="810"></div><figcaption><time datetime="2026-09-08">Sep 8</time><span class="commits">5 commits</span><span class="what">A key press on a real keyboard reaches the headset over USB MIDI. Nothing to look at yet.</span></figcaption></figure></li>
+          <li data-date="Sep 14" data-commits="9"><figure><div class="shot"><img src="img/f1.jpg" alt="A flat virtual keyboard with blue notes falling onto it." width="1440" height="810"></div><figcaption><time datetime="2026-09-14">Sep 14</time><span class="commits">9 commits</span><span class="what">First playable song, on a virtual keyboard.</span></figcaption></figure></li>
+          <li data-date="Oct 15" data-commits="21"><figure><div class="shot"><img src="img/f2.jpg" alt="Passthrough view of a real piano with notes falling onto it and calibration numbers above." width="1440" height="810"></div><figcaption><time datetime="2026-10-15">Oct 15</time><span class="commits">21 commits</span><span class="what">Passthrough on. Calibrated keys line up with the real piano.</span></figcaption></figure></li>
+          <li data-date="Nov 3" data-commits="122"><figure><div class="shot"><img src="img/f3.jpg" alt="Note highway grid over the real keys with a green bar on the key being played." width="1440" height="810"></div><figcaption><time datetime="2026-11-03">Nov 3</time><span class="commits">122 commits</span><span class="what">Note highway, coloured by how well each note was hit.</span></figcaption></figure></li>
+          <li data-date="Nov 5" data-commits="204"><figure><div class="shot"><img src="img/f4.jpg" alt="A hand on the real keys under a falling note, with a glass panel above." width="1440" height="810"></div><figcaption><time datetime="2026-11-05">Nov 5</time><span class="commits">204 commits</span><span class="what">Live score and a metronome while you play.</span></figcaption></figure></li>
+          <li data-date="Nov 7" data-commits="225"><figure><div class="shot"><img src="img/f5.jpg" alt="Notes falling onto real keys with a results panel showing 100 percent keys right." width="1440" height="810"></div><figcaption><time datetime="2026-11-07">Nov 7</time><span class="commits">225 commits</span><span class="what">Memory fade: the notes fade out as you learn the song.</span></figcaption></figure></li>
         </ol>
       </div>
+      <p class="history-note">Clips were recorded on a Quest 2. The blue tint was a passthrough bug, fixed in a later build. Now at 515 commits and running on Quest 3.</p>
+    </div>
+  </section>
 
-      <div class="fair">
-        <p class="eyebrow">Science fair</p>
-        <p>PianoGlass is a team science fair entry with Tushar Chatterjee, in Technology Enhances the Arts. The research question: does an app that listens to what a beginner plays and corrects them in real time help them learn a passage more accurately than a standard falling-notes app? A usability study with five beginner pianists will test it.</p>
-      </div>
-    </section>
+  <section class="wrap features" aria-labelledby="feat-title">
+    <span class="eyebrow">What it does</span>
+    <h2 id="feat-title">Feedback a video can't give you</h2>
+    <div class="cards">
+      <article class="card glass">
+        <h3>Wrong-note feedback</h3>
+        <p>Play D instead of D♯ and the key turns red, and the app shows the note the song wanted.</p>
+        <div class="demo">
+          <svg class="octave" viewBox="0 0 280 120" aria-label="One octave of keys: D is red, D sharp is outlined in blue." role="img">
+            <rect class="w" x="0" y="0" width="40" height="120" rx="3"/>
+            <rect class="w played" x="40" y="0" width="40" height="120" rx="3"/>
+            <rect class="w" x="80" y="0" width="40" height="120" rx="3"/>
+            <rect class="w" x="120" y="0" width="40" height="120" rx="3"/>
+            <rect class="w" x="160" y="0" width="40" height="120" rx="3"/>
+            <rect class="w" x="200" y="0" width="40" height="120" rx="3"/>
+            <rect class="w" x="240" y="0" width="40" height="120" rx="3"/>
+            <rect class="b" x="27" y="0" width="26" height="74" rx="2"/>
+            <rect class="b wanted" x="67" y="1.5" width="26" height="72" rx="2"/>
+            <rect class="b" x="147" y="0" width="26" height="74" rx="2"/>
+            <rect class="b" x="187" y="0" width="26" height="74" rx="2"/>
+            <rect class="b" x="227" y="0" width="26" height="74" rx="2"/>
+          </svg>
+          <div class="verdict"><span class="p">Played D</span><span class="w">Wanted D♯</span></div>
+        </div>
+      </article>
+      <article class="card glass">
+        <h3>Timing on every note</h3>
+        <p>Every note gets a judgement and shows how early or late you were, in milliseconds.</p>
+        <div class="demo">
+          <div class="readout"><span class="j" id="judge" style="color:var(--hit)">Perfect</span><span class="ms" id="ms">−4 ms</span></div>
+          <div class="meter" aria-hidden="true">
+            <div class="zones"><i class="z-m"></i><i class="z-g"></i><i class="z-gr"></i><i class="z-p"></i><i class="z-gr"></i><i class="z-g"></i><i class="z-m"></i></div>
+            <div class="center"></div><div class="dot" id="dot"></div>
+          </div>
+          <div class="meter-labels" aria-hidden="true"><span>early</span><span>late</span></div>
+          <span class="demo-cap">Example readings</span>
+        </div>
+      </article>
+      <article class="card glass">
+        <h3>Results by bar</h3>
+        <p>After each try, the results card colours one box per bar by how well you played it, then suggests what to practise next.</p>
+        <div class="demo">
+          <div class="barrow" id="barrow" aria-label="Example results: bars 1 to 12, bar 9 in red." role="img"><i>1</i><i>2</i><i>3</i><i class="mid">4</i><i>5</i><i>6</i><i>7</i><i>8</i><i class="low">9</i><i class="mid">10</i><i>11</i><i>12</i></div>
+          <span class="suggest">Bar 9 needs work <span>Loop bar 9</span></span>
+        </div>
+      </article>
+      <article class="card glass">
+        <h3>Practice tools</h3>
+        <p>Slow the tempo, loop bars, play one hand at a time, or let the song wait for you. Memory fade hides the notes as you learn them.</p>
+        <div class="demo">
+          <div class="tempo">
+            <div class="tempo-top"><span>Tempo</span><b id="tempo-v">100%</b></div>
+            <div class="slider"><div class="fill" id="tempo-fill"></div><div class="knob" id="tempo-knob"></div></div>
+          </div>
+          <div class="chips" id="chips"><span>Metronome</span><span>Loop bars</span><span>Wait mode</span><span>Right hand</span><span>Left hand</span><span>Memory fade</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
 
-    <section class="work" aria-labelledby="sites">
-      <header>
-        <h2 id="sites">Interactive sites</h2>
-        <p>Class projects I turned into websites. Each one is live.</p>
-      </header>
-      <ul class="rows">
-        <li class="row">
-          <span class="when">Nov 2026</span>
-          <div class="body">
-            <h3>Angle-Pin Launcher Lab</h3>
-            <span class="ctx">AP Physics 1</span>
-            <p>A 3D simulation of a water balloon slingshot, before and after our group's modification. It tracks forces and energy live and fires 20 shots from each launcher to compare accuracy.</p>
-            <div class="tags"><span>three.js</span><span>projectile motion</span><span>energy</span></div>
-          </div>
-          <div class="go"><a href="https://ryan-abou.github.io/angle-pin-launcher-lab/">Visit site</a><a href="https://github.com/ryan-abou/angle-pin-launcher-lab">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">Nov 2026</span>
-          <div class="body">
-            <h3>Turning Outward</h3>
-            <span class="ctx">AP Lang · team of 4</span>
-            <p>A virtual museum on the right to mental health, with a lobby and five galleries. I built the site and curated the gallery on mental health and social media.</p>
-            <div class="tags"><span>JavaScript</span><span>museum layout</span></div>
-          </div>
-          <div class="go"><a href="https://ryan-abou.github.io/mental-health-museum/">Visit site</a><a href="https://github.com/ryan-abou/mental-health-museum">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">May 2026</span>
-          <div class="body">
-            <h3>Game Theory and Algebra II</h3>
-            <span class="ctx">Algebra II</span>
-            <p>A site that connects game theory to the algebra behind it.</p>
-            <div class="tags"><span>HTML</span><span>math</span></div>
-          </div>
-          <div class="go"><a href="https://ryan-abou.github.io/game-theory-project/">Visit site</a><a href="https://github.com/ryan-abou/game-theory-project">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">Feb 2026</span>
-          <div class="body">
-            <h3>Things Fall Apart</h3>
-            <span class="ctx">English</span>
-            <p>An analysis of theme in Chinua Achebe's novel.</p>
-            <div class="tags"><span>HTML</span><span>literary analysis</span></div>
-          </div>
-          <div class="go"><a href="https://ryan-abou.github.io/things-fall-apart-analysis/">Visit site</a><a href="https://github.com/ryan-abou/things-fall-apart-analysis">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">Feb 2026</span>
-          <div class="body">
-            <h3>The Other Wes Moore</h3>
-            <span class="ctx">English</span>
-            <p>An analysis of racism in Wes Moore's book.</p>
-            <div class="tags"><span>HTML</span><span>literary analysis</span></div>
-          </div>
-          <div class="go"><a href="https://ryan-abou.github.io/racism-in-other-wes-moore/">Visit site</a><a href="https://github.com/ryan-abou/racism-in-other-wes-moore">Code</a></div>
-        </li>
-      </ul>
-    </section>
+  <section class="wrap fair" aria-labelledby="fair-title">
+    <div class="fair-panel glass">
+      <span class="eyebrow" id="fair-title">Science fair research question</span>
+      <q>Does an app that listens to what a beginner plays, and corrects them in real time, help them learn a passage more accurately than a standard falling-notes app?</q>
+      <dl class="fair-meta">
+        <div><dt>Category</dt><dd>Technology Enhances the Arts · Games</dd></div>
+        <div><dt>Team</dt><dd>Ryan Abourjeili (lead) and Tushar Chatterjee</dd></div>
+        <div><dt>Method</dt><dd>Usability study with five beginner pianists</dd></div>
+        <div><dt>Status</dt><dd>App in testing, study next</dd></div>
+      </dl>
+    </div>
+  </section>
 
-    <section class="work" aria-labelledby="ai">
-      <header>
-        <h2 id="ai">AI and Python</h2>
-        <p>From my AI class and my own experiments.</p>
-      </header>
-      <ul class="rows">
-        <li class="row">
-          <span class="when">Oct 2026</span>
-          <div class="body">
-            <h3>Python Picture Lab</h3>
-            <span class="ctx">AI class · teaching tool</span>
-            <p>A Python port of the AP CS A Picture Lab, built on plain numpy arrays so students see how an image is stored before they start on machine learning. Includes a pixel-grid inspector notebook and a desktop app.</p>
-            <div class="tags"><span>numpy</span><span>Jupyter</span><span>Tkinter</span></div>
-          </div>
-          <div class="go"><a href="https://github.com/ryan-abou/Python_Picture_Lab">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">May 2026</span>
-          <div class="body">
-            <h3>YOLOv8 People Counter</h3>
-            <span class="ctx">Computer vision</span>
-            <p>Detects and counts people in an image, draws a box around each one and overlays the total.</p>
-            <div class="tags"><span>YOLOv8</span><span>OpenCV</span></div>
-          </div>
-          <div class="go"><a href="https://github.com/ryan-abou/yolov8-people-counter">Code</a></div>
-        </li>
-        <li class="row">
-          <span class="when">Dec 2025</span>
-          <div class="body">
-            <h3>AI Web Summarizer</h3>
-            <span class="ctx">LLM tools</span>
-            <p>Loads any webpage from a URL, pulls out the content and writes a short summary with a language model.</p>
-            <div class="tags"><span>LangChain</span><span>LLM</span></div>
-          </div>
-          <div class="go"><a href="https://github.com/ryan-abou/ai-web-summarizer">Code</a></div>
-        </li>
-      </ul>
-      <p class="small">Smaller things: a <a href="https://github.com/ryan-abou/sigmoid-neuron">sigmoid neuron</a> from scratch and <a href="https://github.com/ryan-abou/SnakeGame">Snake</a> in Python turtle graphics.</p>
-    </section>
-
-    <footer>Updated November 2026 · <a href="https://github.com/ryan-abou">github.com/ryan-abou</a></footer>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee">
+      <span>Unity 6</span><span>C#</span><span>Meta XR SDK</span><span>USB MIDI</span><span>Python</span><span>numpy</span><span>OpenCV</span><span>YOLOv8</span><span>LangChain</span><span>three.js</span><span>JavaScript</span><span>Jupyter</span>
+      <span>Unity 6</span><span>C#</span><span>Meta XR SDK</span><span>USB MIDI</span><span>Python</span><span>numpy</span>
+    </div>
   </div>
+
+  <section class="sites" id="sites" aria-labelledby="sites-title">
+    <div class="wrap sites-inner">
+      <div class="sec-head">
+        <div style="display:grid;gap:.9rem"><span class="eyebrow">Interactive sites</span><h2 id="sites-title">Class projects, turned into websites</h2></div>
+        <p>Each one is live. Physics, English, math and a team museum, all built from scratch.</p>
+      </div>
+      <div class="track" id="track">
+        <article class="site glass">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>ryan-abou.github.io/angle-pin-launcher-lab</span></div><div class="view"><img src="img/s-angle-pin-launcher-lab.jpg" alt="Angle-Pin Launcher Lab: a 3D slingshot model beside launch controls and a kinematics table." loading="lazy" width="960" height="600"></div></div>
+          <div class="site-body"><span class="ctx">AP Physics 1 · Nov 2026</span><h3>Angle-Pin Launcher Lab</h3><p>A 3D water balloon slingshot, before and after our group's modification. It tracks forces and energy live and fires 20 shots from each launcher to compare accuracy.</p>
+            <div class="site-links"><a href="https://ryan-abou.github.io/angle-pin-launcher-lab/">Visit site</a><a href="https://github.com/ryan-abou/angle-pin-launcher-lab">Code</a></div></div>
+        </article>
+        <article class="site glass">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>ryan-abou.github.io/mental-health-museum</span></div><div class="view"><img src="img/s-mental-health-museum.jpg" alt="Turning Outward: a dark museum lobby page with a spiral illustration." loading="lazy" width="960" height="600"></div></div>
+          <div class="site-body"><span class="ctx">AP Lang · team of 4 · Nov 2026</span><h3>Turning Outward</h3><p>A virtual museum on the right to mental health, with a lobby and five galleries. I built the site and curated the gallery on mental health and social media.</p>
+            <div class="site-links"><a href="https://ryan-abou.github.io/mental-health-museum/">Visit site</a><a href="https://github.com/ryan-abou/mental-health-museum">Code</a></div></div>
+        </article>
+        <article class="site glass">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>ryan-abou.github.io/game-theory-project</span></div><div class="view"><img src="img/s-game-theory-project.jpg" alt="Game Theory site headline: Can math predict how people decide?" loading="lazy" width="960" height="600"></div></div>
+          <div class="site-body"><span class="ctx">Algebra II capstone · May 2026</span><h3>Can Math Predict How People Decide?</h3><p>Game theory through the algebra behind it, with a simulator you can play against.</p>
+            <div class="site-links"><a href="https://ryan-abou.github.io/game-theory-project/">Visit site</a><a href="https://github.com/ryan-abou/game-theory-project">Code</a></div></div>
+        </article>
+        <article class="site glass">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>ryan-abou.github.io/things-fall-apart-analysis</span></div><div class="view"><img src="img/s-things-fall-apart-analysis.jpg" alt="Things Fall Apart site: Theme, tradition versus change, with an illustration of a village." loading="lazy" width="960" height="600"></div></div>
+          <div class="site-body"><span class="ctx">English · Feb 2026</span><h3>Things Fall Apart</h3><p>Tradition versus change in Chinua Achebe's novel, through quotes, characters and symbols.</p>
+            <div class="site-links"><a href="https://ryan-abou.github.io/things-fall-apart-analysis/">Visit site</a><a href="https://github.com/ryan-abou/things-fall-apart-analysis">Code</a></div></div>
+        </article>
+        <article class="site glass">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>ryan-abou.github.io/racism-in-other-wes-moore</span></div><div class="view"><img src="img/s-racism-in-other-wes-moore.jpg" alt="Racism and Opportunity site: how race and place affect opportunity, with a map of Atlanta." loading="lazy" width="960" height="600"></div></div>
+          <div class="site-body"><span class="ctx">English · Feb 2026</span><h3>Racism &amp; Opportunity</h3><p>Links <i>The Other Wes Moore</i> to real data about Atlanta, the US and the world.</p>
+            <div class="site-links"><a href="https://ryan-abou.github.io/racism-in-other-wes-moore/">Visit site</a><a href="https://github.com/ryan-abou/racism-in-other-wes-moore">Code</a></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap ai" id="ai" aria-labelledby="ai-title">
+    <div class="sec-head">
+      <div style="display:grid;gap:.9rem"><span class="eyebrow">AI and Python</span><h2 id="ai-title">Models, images and pixels</h2></div>
+      <p>From my AI class and my own experiments.</p>
+    </div>
+    <ul class="rows">
+      <li class="row">
+        <span class="when">Oct 2026</span>
+        <div class="body"><h3>Python Picture Lab</h3><p>A Python port of the AP CS A Picture Lab, built on plain numpy arrays so students see how an image is stored before they start on machine learning. Includes a pixel-grid inspector notebook and a desktop app.</p><div class="tags"><span>numpy</span><span>Jupyter</span><span>Tkinter</span><span>teaching tool</span></div></div>
+        <div class="go"><a href="https://github.com/ryan-abou/Python_Picture_Lab">View code <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      </li>
+      <li class="row">
+        <span class="when">May 2026</span>
+        <div class="body"><h3>YOLOv8 People Counter</h3><p>Detects and counts people in an image, draws a box around each one and overlays the total.</p><div class="tags"><span>YOLOv8</span><span>OpenCV</span><span>computer vision</span></div></div>
+        <div class="go"><a href="https://github.com/ryan-abou/yolov8-people-counter">View code <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      </li>
+      <li class="row">
+        <span class="when">Dec 2025</span>
+        <div class="body"><h3>AI Web Summarizer</h3><p>Loads any webpage from a URL, pulls out the content and writes a short summary with a language model.</p><div class="tags"><span>LangChain</span><span>LLM</span></div></div>
+        <div class="go"><a href="https://github.com/ryan-abou/ai-web-summarizer">View code <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      </li>
+    </ul>
+    <p class="smaller">Smaller things: a <a href="https://github.com/ryan-abou/sigmoid-neuron">sigmoid neuron</a> from scratch and <a href="https://github.com/ryan-abou/SnakeGame">Snake</a> in Python turtle graphics.</p>
+  </section>
+
+  <footer class="wrap">
+    <p class="sign">Ryan<span>Abourjeili</span></p>
+    <div class="foot-row"><a href="https://github.com/ryan-abou">github.com/ryan-abou</a><span>Updated November 2026</span></div>
+  </footer>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
 <script>
 (function () {
-  var svg = document.getElementById('keys');
-  if (!svg) return;
-  var NS = 'http://www.w3.org/2000/svg';
-  var W = 20, H = 60, top = 26, n = 52; // 52 white keys, A0 to C8
-  function el(name, attrs) { var e = document.createElementNS(NS, name); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
-  // White-key letters from A0: A B C D E F G repeating. Black key after A, C, D, F, G (not after B or E).
-  var letters = 'ABCDEFG';
-  var litWhite = 23; // C4, middle C
-  var g = el('g', {});
-  for (var i = 0; i < n; i++) {
-    g.appendChild(el('rect', { x: i * W, y: top, width: W, height: H, rx: 1.5, 'class': i === litWhite ? 'w lit' : 'w' }));
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+  var hasGsap = !!(window.gsap && window.ScrollTrigger);
+  if (hasGsap && !reduce) root.classList.add('motion', 'splitting');
+  // Safety net: never leave the name hidden if anything below fails.
+  setTimeout(function () { root.classList.remove('splitting'); }, 2500);
+
+  /* ---------- Hero note highway (canvas) ---------- */
+  var heroState = { boost: 0 };
+  (function highway() {
+    var cv = document.getElementById('highway');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var BPM = 112, BEAT = 60 / BPM, LOOP = 32;
+    // Ode to Joy (public domain). [midi, startBeat, beats]
+    var mel = [[64,0,1],[64,1,1],[65,2,1],[67,3,1],[67,4,1],[65,5,1],[64,6,1],[62,7,1],[60,8,1],[60,9,1],[62,10,1],[64,11,1],[64,12,1.5],[62,13.5,.5],[62,14,2],
+               [64,16,1],[64,17,1],[65,18,1],[67,19,1],[67,20,1],[65,21,1],[64,22,1],[62,23,1],[60,24,1],[60,25,1],[62,26,1],[64,27,1],[62,28,1.5],[60,29.5,.5],[60,30,2]];
+    var bass = [[48,0,4],[55,4,4],[48,8,4],[55,12,4],[48,16,4],[55,20,4],[48,24,4],[55,28,2],[48,30,2]];
+    var notes = mel.map(function (n, i) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'r', g: (i % 7 === 5) ? 'Great' : 'Perfect' }; })
+      .concat(bass.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'l', g: 'Perfect' }; }));
+    var BLACK = { 1: 1, 3: 1, 6: 1, 8: 1, 10: 1 };
+    var W, H, dpr, lo, hi, whites, kw, keyH, hitY, pps, keyX = {};
+    var pops = [], lit = {};
+    function layout() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = cv.getBoundingClientRect(); W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      lo = 48; hi = W < 700 ? 72 : 84;
+      whites = 0; for (var m = lo; m <= hi; m++) if (!BLACK[m % 12]) whites++;
+      kw = W / whites; keyH = Math.min(kw * 4.2, W < 700 ? 88 : 132); hitY = H - keyH; pps = Math.max(H * 0.34, 180);
+      var wi = 0; keyX = {};
+      for (m = lo; m <= hi; m++) {
+        if (BLACK[m % 12]) keyX[m] = { x: wi * kw - kw * 0.31, w: kw * 0.62, b: true };
+        else { keyX[m] = { x: wi * kw, w: kw, b: false }; wi++; }
+      }
+    }
+    function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+    var last = -1;
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      // lanes
+      ctx.strokeStyle = 'rgba(120,160,230,0.07)'; ctx.lineWidth = 1;
+      for (var i = 0; i <= whites; i++) { var x = Math.round(i * kw) + .5; ctx.beginPath(); ctx.moveTo(x, hitY * 0.15); ctx.lineTo(x, hitY); ctx.stroke(); }
+      // beat lines moving down
+      var bt = Math.ceil(t / BEAT) * BEAT;
+      for (var b = bt; (b - t) * pps < hitY; b += BEAT) {
+        var y = hitY - (b - t) * pps; var bar = Math.round(b / BEAT) % 4 === 0;
+        ctx.fillStyle = bar ? 'rgba(140,180,255,0.16)' : 'rgba(140,180,255,0.06)';
+        ctx.fillRect(0, y, W, bar ? 1.5 : 1);
+      }
+      // notes (two loops so the wrap is seamless)
+      var now = {};
+      for (var k = 0; k < 2; k++) {
+        var off = k * LOOP * BEAT;
+        for (i = 0; i < notes.length; i++) {
+          var n = notes[i], kx = keyX[n.m]; if (!kx) continue;
+          var s = n.s + off, e = s + n.d;
+          if (t >= s && t < e) now[n.m] = n.h;
+          var yb = hitY - (s - t) * pps, yt = hitY - (e - t) * pps;
+          if (yb < 0 || yt > hitY) continue;
+          yb = Math.min(yb, hitY);
+          var nx = kx.x + (kx.b ? 2 : kw * 0.14), nw = kx.b ? kx.w - 4 : kw * 0.72;
+          var col = n.h === 'r' ? '79,157,255' : '154,140,255';
+          ctx.fillStyle = 'rgba(' + col + ',0.18)'; rr(nx - 3, yt - 3, nw + 6, yb - yt + 6, 7); ctx.fill();
+          var gr = ctx.createLinearGradient(0, yt, 0, yb); gr.addColorStop(0, 'rgba(' + col + ',0.55)'); gr.addColorStop(1, 'rgba(' + col + ',1)');
+          ctx.fillStyle = gr; rr(nx, yt, nw, Math.max(yb - yt - 2, 3), 5); ctx.fill();
+        }
+      }
+      // judgements: fire when a note starts
+      if (last >= 0) for (i = 0; i < notes.length; i++) {
+        var s0 = notes[i].s;
+        var cross = t >= last ? (s0 > last && s0 <= t) : (s0 > last || s0 <= t);
+        if (cross && notes[i].h === 'r' && keyX[notes[i].m]) pops.push({ m: notes[i].m, g: notes[i].g, t0: t });
+      }
+      last = t;
+      // hit line
+      var hl = ctx.createLinearGradient(0, 0, W, 0); hl.addColorStop(0, 'rgba(79,157,255,0)'); hl.addColorStop(.5, 'rgba(79,157,255,.9)'); hl.addColorStop(1, 'rgba(79,157,255,0)');
+      ctx.fillStyle = hl; ctx.fillRect(0, hitY - 2, W, 2);
+      // keys
+      for (var m in keyX) { var q = keyX[m]; if (q.b) continue;
+        ctx.fillStyle = now[m] ? (now[m] === 'r' ? '#34d38d' : '#9a8cff') : '#dfe6f0'; rr(q.x + 1, hitY, q.w - 2, keyH - 2, 4); ctx.fill();
+        if (now[m]) { ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(q.x + 1, hitY, q.w - 2, 4); }
+      }
+      for (m in keyX) { q = keyX[m]; if (!q.b) continue;
+        ctx.fillStyle = now[m] ? '#34d38d' : '#0e1526'; rr(q.x, hitY, q.w, keyH * 0.62, 3); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(q.x + 2, hitY + keyH * 0.62 - 5, q.w - 4, 2);
+      }
+      // glow on lit keys
+      for (m in now) { q = keyX[m]; if (!q) continue;
+        var g2 = ctx.createRadialGradient(q.x + q.w / 2, hitY, 0, q.x + q.w / 2, hitY, kw * 1.6);
+        g2.addColorStop(0, 'rgba(52,211,141,.45)'); g2.addColorStop(1, 'rgba(52,211,141,0)');
+        ctx.fillStyle = g2; ctx.fillRect(q.x - kw * 1.6, hitY - kw * 1.6, q.w + kw * 3.2, kw * 1.6);
+      }
+      // pops
+      // one judgement on screen at a time, so labels never pile up
+      ctx.textAlign = 'center'; ctx.font = '600 ' + (W < 700 ? 9 : 11) + 'px "Geist Mono", ui-monospace, monospace';
+      if (pops.length > 1) pops = pops.slice(-1);
+      pops = pops.filter(function (p) { var a = t - p.t0; if (a < 0) a += LOOP * BEAT; return a < 0.5; });
+      pops.forEach(function (p) { var a = t - p.t0; if (a < 0) a += LOOP * BEAT; var q = keyX[p.m];
+        ctx.globalAlpha = Math.max(0, 1 - a / 0.5);
+        ctx.fillStyle = p.g === 'Perfect' ? '#34d38d' : '#4f9dff';
+        ctx.fillText(p.g.toUpperCase(), q.x + q.w / 2, hitY - 14 - a * 50); ctx.globalAlpha = 1; });
+    }
+    layout();
+    var t = 2.2, prev = null, running = true, visible = true;
+    function frame(ts) {
+      if (!running) return;
+      if (prev != null) { var dt = Math.min((ts - prev) / 1000, 0.05); t = (t + dt * (1 + heroState.boost * 1.6)) % (LOOP * BEAT); }
+      prev = ts; draw(t); requestAnimationFrame(frame);
+    }
+    function start() { if (running || reduce) return; running = true; prev = null; requestAnimationFrame(frame); }
+    function stop() { running = false; }
+    if (reduce) { running = false; draw(t + 0.3); }
+    else requestAnimationFrame(frame);
+    new ResizeObserver(function () { layout(); if (!running) draw(t); }).observe(cv);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; visible && !document.hidden ? start() : stop(); }).observe(cv);
+    document.addEventListener('visibilitychange', function () { !document.hidden && visible ? start() : stop(); });
+  })();
+
+  /* ---------- Small demos (time-based, run while visible) ---------- */
+  function whenVisible(el, on, off) {
+    if (!('IntersectionObserver' in window)) { on(); return; }
+    new IntersectionObserver(function (es) { es[0].isIntersecting ? on() : off(); }, { threshold: 0.3 }).observe(el);
   }
-  for (var j = 0; j < n - 1; j++) {
-    var L = letters[j % 7];
-    if (L === 'B' || L === 'E') continue;
-    g.appendChild(el('rect', { x: j * W + W * 0.68, y: top, width: W * 0.64, height: H * 0.62, rx: 1, 'class': 'b' }));
+  (function timing() {
+    var dot = document.getElementById('dot'), j = document.getElementById('judge'), ms = document.getElementById('ms');
+    if (!dot || reduce) return;
+    var seq = [[-4, 'Perfect', 'var(--hit)'], [31, 'Great', 'var(--note)'], [2, 'Perfect', 'var(--hit)'], [-72, 'Good', 'var(--warm)'], [-27, 'Great', 'var(--note)'], [118, 'Miss', 'var(--miss)']];
+    var i = 0, timer = null;
+    function step() { var s = seq[i++ % seq.length]; dot.style.left = (50 + s[0] / 150 * 50) + '%'; j.textContent = s[1]; j.style.color = s[2]; ms.textContent = (s[0] > 0 ? '+' : s[0] < 0 ? '−' : '') + Math.abs(s[0]) + ' ms'; }
+    whenVisible(dot.parentNode, function () { if (!timer) { step(); timer = setInterval(step, 1300); } }, function () { clearInterval(timer); timer = null; });
+  })();
+  (function practice() {
+    var v = document.getElementById('tempo-v'), f = document.getElementById('tempo-fill'), k = document.getElementById('tempo-knob'), chips = document.querySelectorAll('#chips span');
+    if (!v || reduce) { if (chips[0]) { chips[0].classList.add('on'); chips[5].classList.add('on'); } return; }
+    var tempos = [100, 75, 60, 85], i = 0, timer = null;
+    function step() { var p = tempos[i % tempos.length]; v.textContent = p + '%'; f.style.width = p + '%'; k.style.left = p + '%';
+      chips.forEach(function (c, n) { c.classList.toggle('on', n === i % chips.length || n === (i + 3) % chips.length); }); i++; }
+    whenVisible(v.closest('.demo'), function () { if (!timer) { step(); timer = setInterval(step, 1600); } }, function () { clearInterval(timer); timer = null; });
+  })();
+
+  if (!hasGsap || reduce) return;
+  try { setupMotion(); } catch (err) {
+    // Fall back to the static layout, which is complete on its own.
+    root.classList.remove('motion', 'splitting');
+    try { ScrollTrigger.getAll().forEach(function (s) { s.kill(true); }); gsap.set('*', { clearProps: 'all' }); } catch (e) {}
+    if (window.console) console.warn('Motion disabled:', err);
   }
-  svg.appendChild(g);
-  svg.appendChild(el('rect', { x: litWhite * W + 4, y: 2, width: W - 8, height: 22, rx: 2, 'class': 'fall' }));
-  svg.appendChild(el('rect', { x: litWhite * W + 2, y: top - 3, width: W - 4, height: 2.5, rx: 1, 'class': 'judge' }));
+
+  function setupMotion() {
+  /* ---------- Scroll motion (GSAP + ScrollTrigger) ---------- */
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  var mm = gsap.matchMedia();
+
+  // progress bar
+  gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
+
+  // hero intro: letters rise out of a mask
+  function heroIntro() {
+    root.classList.remove('splitting');
+    var split = SplitText.create('#name .line', { type: 'chars,lines', mask: 'lines', linesClass: 'mask-line' });
+    gsap.from(split.chars, { yPercent: 115, duration: 1.1, ease: 'expo.out', stagger: 0.028, delay: 0.1 });
+    gsap.from('.hero .eyebrow, .hero .lede, .hero-actions, .now-playing', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.45 });
+  }
+  var started = false;
+  function go() { if (started) return; started = true; heroIntro(); }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
+  setTimeout(go, 1500);
+
+  // hero scroll-out: copy lifts away, highway speeds up
+  gsap.to('.hero-copy', { yPercent: -18, opacity: 0.15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  ScrollTrigger.create({ trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true, onUpdate: function (s) { heroState.boost = s.progress; } });
+
+  // statement: words light up as you read
+  var st = SplitText.create('#statement', { type: 'words' });
+  gsap.fromTo(st.words, { opacity: 0.14 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: '#statement', start: 'top 80%', end: 'bottom 45%', scrub: true } });
+
+  // headset shot: slow zoom-out
+  gsap.fromTo('#pg-shot', { scale: 1.18 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '.headset', start: 'top bottom', end: 'bottom 40%', scrub: true } });
+  gsap.from('.pg-text > *', { y: 30, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '.pg-text', start: 'top 80%' } });
+
+  // facts count up
+  gsap.utils.toArray('[data-count]').forEach(function (el) {
+    var end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), o = { v: 0 };
+    gsap.to(o, { v: end, duration: 1.6, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' }, onUpdate: function () { el.textContent = o.v.toFixed(dec); } });
+  });
+
+  // build history: pinned, each milestone wipes in over the last
+  (function history() {
+    var items = gsap.utils.toArray('#frames li'), rail = document.getElementById('rail'), counter = document.getElementById('commit-n');
+    if (!items.length) return;
+    var fill = document.createElement('i'); fill.className = 'fill'; rail.appendChild(fill);
+    var btns = items.map(function (li, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.tabIndex = -1;
+      b.innerHTML = '<b>' + li.dataset.date + '</b><span>' + li.dataset.commits + ' commits</span>';
+      var wrap = document.createElement('li'); wrap.appendChild(b); rail.appendChild(wrap); return b;
+    });
+    var cur = -1, shown = { v: +items[0].dataset.commits };
+    function setActive(i) {
+      if (i === cur) return; cur = i;
+      btns.forEach(function (b, n) { b.classList.toggle('on', n === i); });
+      gsap.to(shown, { v: +items[i].dataset.commits, duration: 0.6, ease: 'power2.out', overwrite: true, onUpdate: function () { counter.textContent = Math.round(shown.v); } });
+      var r = btns[i].parentNode; if (rail.scrollWidth > rail.clientWidth) rail.scrollTo({ left: r.offsetLeft - 16, behavior: 'smooth' });
+    }
+    setActive(0);
+    var tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: {
+      trigger: '.history-pin', start: 'top top', end: function () { return '+=' + (items.length - 1) * window.innerHeight * 0.75; },
+      pin: true, scrub: 0.6, invalidateOnRefresh: true,
+      onUpdate: function (s) { setActive(Math.min(items.length - 1, Math.round(s.progress * (items.length - 1)))); gsap.set(fill, { scaleY: s.progress }); }
+    } });
+    items.forEach(function (li, i) {
+      if (i === 0) return;
+      tl.fromTo(li, { clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1 }, i - 1)
+        .fromTo(li.querySelector('img'), { scale: 1.12, xPercent: 4 }, { scale: 1, xPercent: 0, duration: 1 }, i - 1)
+        .to(items[i - 1].querySelector('img'), { scale: 0.94, opacity: 0.4, duration: 1 }, i - 1);
+    });
+    btns.forEach(function (b, i) { b.addEventListener('click', function () { var s = tl.scrollTrigger; window.scrollTo({ top: s.start + (s.end - s.start) * (i / (items.length - 1)) + 2, behavior: 'smooth' }); }); });
+  })();
+
+  // feature cards rise in
+  gsap.from('.card', { y: 60, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12, scrollTrigger: { trigger: '.cards', start: 'top 82%' } });
+  gsap.from('#barrow i', { scaleY: 0, transformOrigin: '50% 100%', duration: 0.6, ease: 'back.out(2)', stagger: 0.05, scrollTrigger: { trigger: '#barrow', start: 'top 85%' } });
+
+  // science fair panel
+  gsap.from('.fair-panel', { y: 60, opacity: 0, scale: 0.97, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.fair-panel', start: 'top 85%' } });
+
+  // skills marquee drifts with scroll
+  gsap.fromTo('#marquee', { xPercent: 0 }, { xPercent: -35, ease: 'none', scrollTrigger: { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+  // sites: sideways gallery on wide screens, stacked rise-in on narrow ones
+  mm.add('(min-width: 820px)', function () {
+    var sec = document.getElementById('sites'), track = document.getElementById('track');
+    sec.classList.add('sideways');
+    var dist = function () { return Math.max(0, track.scrollWidth - track.parentNode.clientWidth); };
+    var tw = gsap.to(track, { x: function () { return -dist(); }, ease: 'none', scrollTrigger: { trigger: sec, start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 0.6, invalidateOnRefresh: true } });
+    gsap.utils.toArray('.site .view img').forEach(function (img) {
+      gsap.fromTo(img, { xPercent: -6 }, { xPercent: 6, ease: 'none', scrollTrigger: { trigger: img, containerAnimation: tw, start: 'left right', end: 'right left', scrub: true } });
+    });
+    return function () { sec.classList.remove('sideways'); gsap.set(track, { clearProps: 'transform' }); };
+  });
+  mm.add('(max-width: 819px)', function () {
+    gsap.utils.toArray('.site').forEach(function (el) { gsap.from(el, { y: 50, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } }); });
+  });
+
+  // AI rows: rule draws, then content rises
+  gsap.utils.toArray('.row').forEach(function (row) {
+    var tl = gsap.timeline({ scrollTrigger: { trigger: row, start: 'top 86%' } });
+    tl.fromTo(row.querySelectorAll('.when, .body, .go'), { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.07 });
+  });
+
+  // footer signature slides in letter by letter
+  var sig = SplitText.create('footer .sign', { type: 'chars' });
+  gsap.from(sig.chars, { yPercent: 60, opacity: 0, ease: 'none', stagger: 0.03, scrollTrigger: { trigger: 'footer', start: 'top 90%', end: 'top 45%', scrub: true } });
+
+  window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+  if (document.fonts) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+  }
 })();
 </script>
 
