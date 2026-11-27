@@ -115,13 +115,13 @@ img { display: block; max-width: 100%; }
 .hero-stage::before { content: ""; position: absolute; inset: 0 0 var(--keyh, 130px) 0; z-index: 1; pointer-events: none; background: linear-gradient(90deg, rgba(10,13,18,.92) 0%, rgba(10,13,18,.82) 34%, rgba(10,13,18,.35) 56%, rgba(10,13,18,0) 70%); }
 .hero-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, var(--bg) 0%, rgba(10,13,18,.75) 22%, rgba(10,13,18,0) 55%); }
 @media (max-width: 700px) { .hero-stage::before { background: linear-gradient(90deg, rgba(10,13,18,.78), rgba(10,13,18,.6)); } }
-.hero-copy { padding-block: 8.5rem 13.5rem; display: grid; gap: 1.5rem; position: relative; }
-@media (min-width: 900px) { .hero-copy { padding-block: 10rem 16rem; } }
+.hero-copy { padding-block: 8rem calc(var(--keyh, 130px) + 3.25rem); display: grid; gap: 1.5rem; position: relative; }
+@media (min-width: 900px) { .hero-copy { padding-top: 8.5rem; } }
 .hero h1 { font-weight: 700; font-size: clamp(3.25rem, 21vw, 9.5rem); letter-spacing: -0.045em; line-height: .9; padding-bottom: .08em; }
 .hero h1 .line { display: block; }
-.hero h1 .line + .line { color: #a3aeba; margin-left: 0.0075em; margin-top: 0.015em; }
-.kR { margin-right: .02em; }
-.kA { margin-right: -.015em; }
+.hero h1 .line + .line { color: #a3aeba; margin-left: 0.0425em; margin-top: 0.015em; }
+.kR { margin-right: .043em; }
+.kA { margin-right: -.027em; }
 /* clip the y's slanted tail exactly where the b's stem begins, so the two strokes join cleanly */
 .tail { clip-path: inset(-1em -1em 0.105em -1em); }
 /* Each letter is a key: the melody below lights them in right-hand blue, one note at a time. */
@@ -139,22 +139,15 @@ html.lenis, html.lenis body { height: auto; }
 .hero .lede { font-size: clamp(1.12rem, 1.1vw + .85rem, 1.45rem); font-weight: 300; max-width: 35rem; color: #cfd7e0; line-height: 1.45; }
 .hero .lede b { color: var(--ink); font-weight: 500; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
-.now-playing { font-family: var(--mono); font-size: .72rem; color: var(--muted); display: flex; align-items: center; gap: .5rem; letter-spacing: .04em; }
-.now-playing i { width: 6px; height: 6px; border-radius: 50%; background: var(--hit); box-shadow: 0 0 10px var(--hit); flex: none; }
-.now-playing .rh { color: var(--rh); } .now-playing .lh { color: var(--lh); }
-.status {
-  position: absolute; z-index: 2;
-  right: max(20px, env(safe-area-inset-right, 0px));
-  bottom: calc(var(--keyh, 130px) + 1.6rem);
-  display: flex; align-items: baseline; gap: .7rem;
-  padding: .55rem .95rem; border-radius: 14px;
-  font-variant-numeric: tabular-nums;
-}
-.status .lbl { font-family: var(--mono); font-size: .66rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-.status .j { font-weight: 700; font-size: 1rem; min-width: 4.6rem; }
-.status .n { font-weight: 600; min-width: 1.4rem; }
-.status .ms { font-family: var(--mono); font-size: .8rem; color: var(--muted); min-width: 4rem; text-align: right; }
-@media (max-width: 640px) { .status { bottom: calc(var(--keyh, 90px) + 1rem); padding: .45rem .75rem; } .status .lbl { display: none; } }
+.piano-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem .75rem; }
+.pill.sm { padding: .5rem .95rem; font-size: .88rem; }
+.pill .wave, .pill.on .x { opacity: 0; }
+.pill.on .wave { opacity: 1; }
+.pill .wave, .pill .x { transition: opacity .2s; }
+.piano-hint { font-family: var(--mono); font-size: .72rem; color: var(--muted); display: flex; align-items: center; gap: .5rem; letter-spacing: .04em; }
+.piano-hint > i { width: 6px; height: 6px; border-radius: 50%; background: var(--hit); box-shadow: 0 0 10px var(--hit); flex: none; }
+.piano-hint .rh { color: var(--rh); } .piano-hint .lh { color: var(--lh); }
+.piano-hint kbd { font-family: var(--mono); font-size: .68rem; padding: .02rem .35rem; border: 1px solid rgba(255,255,255,.25); border-radius: 4px; color: var(--ink); }
 
 /* Statement */
 .statement { padding-block: clamp(6rem, 14vw, 11rem) clamp(4rem, 9vw, 7rem); }
@@ -364,7 +357,7 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 /* Footer */
 footer { padding-block: clamp(5rem, 10vw, 8rem) 3rem; display: grid; gap: 2rem; }
 footer .sign { font-weight: 700; font-size: clamp(2.8rem, 17vw, 7.8rem); letter-spacing: -0.045em; line-height: .9; }
-footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin-top: 0.015em; }
+footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin-top: 0.015em; }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: .76rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1.25rem; }
 .foot-row a { color: var(--ink); text-decoration: none; }
 
@@ -395,9 +388,16 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="pill" href="https://github.com/ryan-abou">github.com/ryan-abou</a>
       </div>
-      <div class="now-playing" id="now-playing" aria-hidden="true"><i></i><span>Ode to Joy · <span class="lh">left hand</span> and <span class="rh">right hand</span></span></div>
+      <div class="piano-ctl">
+        <button type="button" class="pill sm" id="snd" aria-pressed="false" title="Hear the piano">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8v4h3l4 3.5v-11L6 8H3Z" fill="currentColor"/><path class="wave" d="M13 7.5a3.5 3.5 0 0 1 0 5M15.2 5.5a6.5 6.5 0 0 1 0 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="x" d="m13.5 8 4 4m0-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>Sound off</span></button>
+        <button type="button" class="pill sm" id="free" aria-pressed="false" title="Hide the song and play the keys yourself">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 4.5v6M10 4.5v11M13 4.5v6" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span>Play your own</span></button>
+        <span class="piano-hint"><i></i><span id="piano-hint">Ode to Joy · <span class="lh">left hand</span> and <span class="rh">right hand</span></span></span>
+      </div>
     </div>
-    <div class="status glass" id="status" aria-hidden="true"><span class="lbl">Last note</span><span class="j" id="st-j" style="color:var(--j-perfect)">Perfect</span><span class="n" id="st-n">E</span><span class="ms" id="st-ms">0 ms</span></div>
   </header>
 
   <section class="wrap statement" id="pianoglass" aria-label="Why PianoGlass exists">
@@ -630,25 +630,69 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
   try { motionOn = localStorage.getItem('pg-motion') !== 'off'; } catch (e) {}
   var toggle = document.getElementById('motion-toggle');
 
-  /* ---------- Hero: the PianoGlass note highway ---------- */
-  var hero = { boost: 0, running: false, start: null, stop: null, drawStatic: null };
+  /* ---------- Hero: the PianoGlass note highway, playable and audible ---------- */
+  var hero = { running: false, start: null, stop: null, drawStatic: null };
   (function highway() {
     var cv = document.getElementById('highway');
     if (!cv) return;
     var ctx = cv.getContext('2d');
-    var C = { rh: '#66ADF2', lh: '#E8B86D', hit: '#3DDC97', label: 'rgba(10,18,32,0.92)', white: '#ECE8E1', black: '#15171B' };
-    var BPM = 112, BEAT = 60 / BPM, LOOP = 32, LOOK = 3.0;
+    var C = { rh: '#66ADF2', lh: '#E8B86D', hit: '#3DDC97', label: 'rgba(10,18,32,0.92)' };
+    var BPM = 112, BEAT = 60 / BPM, LOOP = 32, LOOK = 3.0, SONG = LOOP * BEAT;
     var NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
     // Ode to Joy (public domain). [midi, startBeat, beats]
     var mel = [[64,0,1],[64,1,1],[65,2,1],[67,3,1],[67,4,1],[65,5,1],[64,6,1],[62,7,1],[60,8,1],[60,9,1],[62,10,1],[64,11,1],[64,12,1.5],[62,13.5,.5],[62,14,2],
                [64,16,1],[64,17,1],[65,18,1],[67,19,1],[67,20,1],[65,21,1],[64,22,1],[62,23,1],[60,24,1],[60,25,1],[62,26,1],[64,27,1],[62,28,1.5],[60,29.5,.5],[60,30,2]];
     var bass = [[48,0,4],[55,4,4],[48,8,4],[55,12,4],[48,16,4],[55,20,4],[48,24,4],[55,28,2],[48,30,2]];
-    var offs = [-3, 12, -21, 6, 0, -9, 57, 18, -2, -14, 4, 31, -6, 63, 9];
-    var notes = mel.map(function (n, i) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'r', off: offs[i % offs.length] }; })
-      .concat(bass.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'l', off: 0 }; }));
+    var notes = mel.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'r' }; })
+      .concat(bass.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'l' }; }));
     var BLACK = { 1: 1, 3: 1, 6: 1, 8: 1, 10: 1 };
-    var W, H, dpr, lo, hi, up = 0, whites, kw, keyH, hitY, D, pps, cx, keyX = {};
-    var stJ = document.getElementById('st-j'), stN = document.getElementById('st-n'), stMs = document.getElementById('st-ms');
+    var W, H, dpr, lo, hi, up = 0, whites, kw, keyH, lip, hitY, D, pps, cx, keyX = {};
+    var free = false, trail = [];
+
+    /* --- sound: a small synthesized piano (no files), off until the visitor turns it on --- */
+    var AC = window.AudioContext || window.webkitAudioContext, actx = null, master = null, noiseBuf = null, soundOn = false;
+    function audio() {
+      if (actx || !AC) return actx;
+      actx = new AC();
+      var comp = actx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3;
+      master = actx.createGain(); master.gain.value = 0.55;
+      var dry = actx.createGain(); dry.gain.value = 0.85;
+      var wet = actx.createGain(); wet.gain.value = 0.22;
+      var verb = actx.createConvolver(), len = Math.floor(actx.sampleRate * 1.8), ir = actx.createBuffer(2, len, actx.sampleRate);
+      for (var ch = 0; ch < 2; ch++) { var d = ir.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+      verb.buffer = ir;
+      master.connect(dry); master.connect(verb); verb.connect(wet);
+      dry.connect(comp); wet.connect(comp); comp.connect(actx.destination);
+      noiseBuf = actx.createBuffer(1, Math.floor(actx.sampleRate * 0.05), actx.sampleRate);
+      var nd = noiseBuf.getChannelData(0); for (i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * (1 - i / nd.length);
+      return actx;
+    }
+    function playNote(m, dur, vel) {
+      if (!soundOn || !audio()) return null;
+      var a = actx, t0 = a.currentTime + 0.005, f = 440 * Math.pow(2, (m - 69) / 12);
+      var env = a.createGain(); env.gain.setValueAtTime(0, t0);
+      env.gain.linearRampToValueAtTime(vel, t0 + 0.005);
+      env.gain.setTargetAtTime(vel * 0.32, t0 + 0.005, 0.09);                          // the quick drop after the hammer
+      env.gain.setTargetAtTime(0.0001, t0 + 0.12, 1.1 * Math.pow(261.6 / f, 0.45));   // long ring, shorter up high
+      var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
+      lp.frequency.setValueAtTime(Math.min(12000, f * 14), t0); lp.frequency.setTargetAtTime(f * 3.2, t0, 0.35);
+      lp.connect(env); env.connect(master);
+      var parts = [[1, 'sine', 1], [2, 'sine', 0.34], [3, 'sine', 0.12], [1.002, 'triangle', 0.16], [4, 'sine', 0.05]], oscs = [];
+      parts.forEach(function (p) { var o = a.createOscillator(), g = a.createGain(); o.type = p[1]; o.frequency.value = f * p[0]; g.gain.value = p[2]; o.connect(g); g.connect(lp); o.start(t0); oscs.push(o); });
+      var nz = a.createBufferSource(), bp = a.createBiquadFilter(), ng = a.createGain();
+      nz.buffer = noiseBuf; bp.type = 'bandpass'; bp.frequency.value = Math.min(6000, f * 6); bp.Q.value = 0.8; ng.gain.value = vel * 0.18;
+      nz.connect(bp); bp.connect(ng); ng.connect(master); nz.start(t0);
+      var stopped = false;
+      function stop(at) {
+        if (stopped) return; stopped = true;
+        var ts = Math.max(at || a.currentTime, t0 + 0.02);
+        env.gain.cancelScheduledValues(ts); env.gain.setTargetAtTime(0, ts, 0.09);
+        oscs.forEach(function (o) { o.stop(ts + 0.6); });
+      }
+      if (dur != null) stop(t0 + dur);
+      return { stop: stop };
+    }
+
     function layout() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       var r = cv.getBoundingClientRect(); W = r.width; H = r.height;
@@ -657,14 +701,14 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       lo = 48; hi = W < 700 ? 72 : 84; up = W < 700 ? 0 : 12;
       whites = 0; for (var m = lo; m <= hi; m++) if (!BLACK[m % 12]) whites++;
-      kw = W / whites; keyH = Math.min(kw * 4.4, W < 700 ? 92 : 138);
+      kw = W / whites; keyH = Math.min(kw * 5.6, W < 700 ? 118 : 172); lip = Math.max(5, keyH * 0.06);
       hitY = H - keyH; cx = W / 2;
       D = hitY * 1.6;                                   // how strongly the wall leans back
       var u = 0.97 * 1.6 / (1.6 - 0.97);                // wall height that reaches the top
       pps = u * hitY / LOOK;
       var wi = 0; keyX = {};
       for (m = lo; m <= hi; m++) {
-        if (BLACK[m % 12]) keyX[m] = { x: wi * kw - kw * 0.31, w: kw * 0.62, b: true };
+        if (BLACK[m % 12]) keyX[m] = { x: wi * kw - kw * 0.3, w: kw * 0.6, b: true };
         else { keyX[m] = { x: wi * kw, w: kw, b: false }; wi++; }
       }
       cv.closest('.hero').style.setProperty('--keyh', keyH + 'px');
@@ -676,22 +720,63 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(d[0], d[1]); ctx.closePath();
     }
     function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
-    var lastT = -1, lastShown = -1;
+    function mix(hex, toward, amt) {
+      var n = parseInt(hex.slice(1), 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255, tv = toward === 'w' ? 255 : 0;
+      return 'rgb(' + Math.round(r + (tv - r) * amt) + ',' + Math.round(g + (tv - g) * amt) + ',' + Math.round(b + (tv - b) * amt) + ')';
+    }
+    function slab(nx, nw, h0, h1, color, name, top) {
+      if (h1 <= h0 || h0 > top) return;
+      ctx.fillStyle = color; quad(nx, nx + nw, h0, Math.min(h1, top)); ctx.fill();
+      var bot = P(nx + nw / 2, h0), fs = Math.max(10, Math.min(24, nw * 0.62) * bot[2]);
+      if (name && (h1 - h0) * bot[2] > fs * 1.5 && h0 < top * 0.85) {
+        ctx.fillStyle = C.label; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        ctx.font = '700 ' + fs + 'px Outfit, system-ui, sans-serif';
+        ctx.fillText(name, bot[0], bot[1] - fs * 0.45 - 3);
+      }
+    }
+    // Keys shaped like a real keyboard: a shaded top, a front lip, raised black keys; pressed keys sink.
+    function drawKeys(lit) {
+      var q, k, col, down, y0, bodyH, g;
+      for (q in keyX) { k = keyX[q]; if (k.b) continue;
+        col = lit[q]; down = col ? 2 : 0; y0 = hitY + down; bodyH = keyH - lip - down;
+        g = ctx.createLinearGradient(0, y0, 0, y0 + bodyH);
+        if (col) { g.addColorStop(0, mix(col, 'b', 0.25)); g.addColorStop(0.18, col); g.addColorStop(1, mix(col, 'w', 0.12)); }
+        else { g.addColorStop(0, '#cfcac1'); g.addColorStop(0.14, '#ece8e1'); g.addColorStop(1, '#f6f3ee'); }
+        ctx.fillStyle = g; ctx.fillRect(k.x + 0.75, y0, k.w - 1.5, bodyH);
+        ctx.fillStyle = col ? mix(col, 'b', 0.3) : '#c4beb3';                       // front lip
+        rr(k.x + 0.75, y0 + bodyH, k.w - 1.5, lip, [0, 0, 4, 4]); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(k.x + 1.5, y0 + bodyH - 1, k.w - 3, 1);
+      }
+      for (q in keyX) { k = keyX[q]; if (!k.b) continue;
+        col = lit[q]; var bh = keyH * 0.62, bev = Math.max(6, bh * 0.13), dn = col ? 2 : 0;
+        ctx.fillStyle = 'rgba(0,0,0,0.28)'; rr(k.x + 2, hitY, k.w, bh + 3, 3); ctx.fill();          // shadow on the white keys
+        ctx.fillStyle = '#0b0c0f'; rr(k.x, hitY, k.w, bh, [0, 0, 3, 3]); ctx.fill();
+        g = ctx.createLinearGradient(0, hitY, 0, hitY + bh - bev);
+        if (col) { g.addColorStop(0, mix(col, 'b', 0.35)); g.addColorStop(1, col); }
+        else { g.addColorStop(0, '#1a1c21'); g.addColorStop(1, '#30343b'); }
+        ctx.fillStyle = g; rr(k.x + 1.5, hitY, k.w - 3, bh - bev + dn, [0, 0, 2, 2]); ctx.fill();
+        ctx.fillStyle = col ? mix(col, 'b', 0.45) : '#24272d';                    // the sloped front of the black key
+        ctx.fillRect(k.x + 1.5, hitY + bh - bev + dn, k.w - 3, bev - dn - 1);
+      }
+      g = ctx.createLinearGradient(0, hitY, 0, hitY + 12);                         // the keys slide under the fallboard
+      g.addColorStop(0, 'rgba(0,0,0,0.45)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, hitY, W, 12);
+    }
+
+    var lastT = -1;
     function draw(t) {
       if (!W) return;
       ctx.clearRect(0, 0, W, H);
-      var top = LOOK * pps;
+      var top = LOOK * pps, m, i, k;
       // lane lines: one per octave, on every C's left edge (HighwayGrid)
       ctx.lineWidth = 1.25; ctx.strokeStyle = 'rgba(224,230,237,0.55)';
-      for (var m = lo; m <= hi; m++) if (m % 12 === 0) { var x = keyX[m].x; var a = P(x, 0), b = P(x, top); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
-      // beat and bar lines move down with the notes; bar numbers in dark tags at the left end
-      var first = Math.ceil(t / BEAT);
-      for (var k = first; (k * BEAT - t) * pps < top; k++) {
-        var h = (k * BEAT - t) * pps, bar = k % 4 === 0;
-        var l = P(0, h), r = P(W, h);
+      for (m = lo; m <= hi; m++) if (m % 12 === 0) { var a = P(keyX[m].x, 0), b = P(keyX[m].x, top); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
+      // beat and bar lines; bar numbers in dark tags at the left end
+      for (k = Math.ceil(t / BEAT); (k * BEAT - t) * pps < top; k++) {
+        var h = (k * BEAT - t) * pps, bar = k % 4 === 0, l = P(0, h), r = P(W, h);
         ctx.fillStyle = bar ? 'rgba(224,230,237,0.20)' : 'rgba(224,230,237,0.08)';
         ctx.fillRect(l[0], l[1] - 0.75, r[0] - l[0], 1.5);
-        if (bar) {
+        if (bar && !free) {
           var s = l[2], num = (Math.floor(k / 4) % 8) + 1, tw = 20 * s, th = 16 * s;
           ctx.fillStyle = 'rgba(8,8,10,0.92)'; rr(l[0] + 8 * s, l[1] - th / 2, tw, th, 4 * s); ctx.fill();
           ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1; ctx.stroke();
@@ -699,107 +784,133 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
           ctx.fillText(String(num), l[0] + 8 * s + tw / 2, l[1] + 0.5);
         }
       }
-      // notes: flat slabs in the hand colour, name at the bottom end, mint once hit
-      var now = {}, onset = {};
-      for (var lp = 0; lp < 2; lp++) {
-        var off = lp * LOOP * BEAT;
-        for (var i = 0; i < notes.length; i++) {
-          var n = notes[i], pm = n.h === 'r' ? n.m + up : n.m, kx = keyX[pm]; if (!kx) continue;
-          var st = n.s + off, en = st + n.d;
-          if (t >= st && t < en) { now[pm] = n.h; onset[pm] = t - st; }
-          // each note is exactly as wide as its key, with a clear gap before the next one
-          var gap = Math.max(5, BEAT * pps * 0.06);
-          var h0 = Math.max(0, (st - t) * pps), h1 = (en - t) * pps - gap;
-          if (h1 <= h0 || h0 > top) continue;
-          var nw = kx.w - (kx.b ? 1 : 2), nx = kx.x + (kx.w - nw) / 2;
-          var hit = t >= st, base = n.h === 'r' ? C.rh : C.lh;
-          ctx.fillStyle = hit ? C.hit : base;
-          quad(nx, nx + nw, h0, Math.min(h1, top)); ctx.fill();
-          var bot = P(nx + nw / 2, h0), slabH = (h1 - h0) * bot[2];
-          var fs = Math.max(10, Math.min(24, nw * 0.62) * bot[2]);
-          if (!hit && slabH > fs * 1.5 && h0 < top * 0.85) {
-            ctx.fillStyle = C.label; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-            ctx.font = '700 ' + fs + 'px Outfit, system-ui, sans-serif';
-            ctx.fillText(NAMES[n.m % 12], bot[0], bot[1] - fs * 0.45 - 3);
+      var lit = {}, gap = Math.max(5, BEAT * pps * 0.06);
+      if (!free) {
+        // the song: flat slabs in the hand colour, name at the bottom end, mint once hit
+        for (var lp = 0; lp < 2; lp++) {
+          var off = lp * SONG;
+          for (i = 0; i < notes.length; i++) {
+            var n = notes[i], pm = n.h === 'r' ? n.m + up : n.m, kx = keyX[pm]; if (!kx) continue;
+            var st = n.s + off, en = st + n.d, hand = n.h === 'r' ? C.rh : C.lh;
+            if (t >= st && t < en) lit[pm] = hand;
+            var nw = kx.w - (kx.b ? 1 : 2), nx = kx.x + (kx.w - nw) / 2;
+            slab(nx, nw, Math.max(0, (st - t) * pps), (en - t) * pps - gap, t >= st ? C.hit : hand, t >= st ? null : NAMES[n.m % 12], top);
           }
         }
+        // sound: play each note as it reaches the keys
+        if (lastT >= 0 && soundOn) for (i = 0; i < notes.length; i++) {
+          var s0 = notes[i].s;
+          if (t >= lastT ? (s0 > lastT && s0 <= t) : (s0 > lastT || s0 <= t))
+            playNote(notes[i].h === 'r' ? notes[i].m + up : notes[i].m, notes[i].d * 0.92, notes[i].h === 'r' ? 0.5 : 0.36);
+        }
+      } else {
+        // your own playing: each press rises up the highway in its hand's colour
+        var nowS = performance.now() / 1000, rise = pps * 0.55;
+        trail = trail.filter(function (p) { return p.t1 == null || (nowS - p.t1) * rise < top; });
+        trail.forEach(function (p) {
+          var kx2 = keyX[p.m]; if (!kx2) return;
+          var nw2 = kx2.w - (kx2.b ? 1 : 2), nx2 = kx2.x + (kx2.w - nw2) / 2;
+          var hb = p.t1 == null ? 0 : (nowS - p.t1) * rise, ht = (nowS - p.t0) * rise;
+          slab(nx2, nw2, hb + (p.t1 == null ? 0 : gap * 0.5), ht, p.m < 60 ? C.lh : C.rh, NAMES[p.m % 12], top);
+        });
       }
+      lastT = t;
       // hit line: a solid dark bar along the keys' far edge
       ctx.fillStyle = 'rgba(5,5,8,0.95)'; ctx.fillRect(0, hitY - 4, W, 5);
-      // keys light in their note's hand colour while it plays
-      for (var q in keyX) { var key = keyX[q]; if (key.b) continue;
-        var pc = hero.pressColor && hero.pressColor(q);
-        var col = pc ? pc.col : now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.white;
-        ctx.fillStyle = col; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill();
-        if (pc && pc.age < 0.15) { ctx.fillStyle = 'rgba(255,255,255,' + (0.35 * (1 - pc.age / 0.15)) + ')'; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill(); }
-        else if (!pc && now[q] && onset[q] < 0.15) { ctx.fillStyle = 'rgba(255,255,255,' + (0.35 * (1 - onset[q] / 0.15)) + ')'; rr(key.x + 1, hitY + 1, key.w - 2, keyH - 3, 4); ctx.fill(); }
-        ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(key.x + 1, hitY + keyH - 10, key.w - 2, 7);
-      }
-      for (q in keyX) { key = keyX[q]; if (!key.b) continue;
-        var pb = hero.pressColor && hero.pressColor(q);
-        ctx.fillStyle = pb ? pb.col : now[q] ? (now[q] === 'r' ? C.rh : C.lh) : C.black; rr(key.x, hitY + 1, key.w, keyH * 0.62, 3); ctx.fill();
-        ctx.fillStyle = 'rgba(255,255,255,0.10)'; ctx.fillRect(key.x + 2, hitY + keyH * 0.62 - 6, key.w - 4, 2);
-      }
-      // status strip: the last right-hand note, judged with the app's windows and colours
-      if (stJ) {
-        var latest = -1;
-        for (i = 0; i < mel.length; i++) if (notes[i].s <= t) latest = i;
-        if (latest < 0) latest = mel.length - 1;
-        if (latest !== lastShown) {
-          lastShown = latest; var o = notes[latest].off, a2 = Math.abs(o);
-          var j = a2 <= 40 ? ['Perfect', 'var(--j-perfect)'] : a2 <= 80 ? ['Great', 'var(--j-great)'] : a2 <= 150 ? ['Good', 'var(--j-good)'] : ['Miss', 'var(--j-miss)'];
-          stJ.textContent = j[0]; stJ.style.color = j[1]; stN.textContent = NAMES[notes[latest].m % 12];
-          stMs.textContent = (o > 0 ? '+' : o < 0 ? '−' : '') + a2 + ' ms';
-        }
-      }
-
+      for (m in pressed) lit[m] = +m < 60 ? C.lh : C.rh;      // your presses win over the song
+      drawKeys(lit);
     }
+
+    /* --- the clock --- */
     layout();
     var t = 0.6, prev = null, visible = true, raf = 0;
     function frame(ts) {
       if (!hero.running) return;
-      if (prev != null) t = (t + Math.min((ts - prev) / 1000, 0.05)) % (LOOP * BEAT);
+      if (prev != null && !free) t = (t + Math.min((ts - prev) / 1000, 0.05)) % SONG;
       prev = ts; draw(t); raf = requestAnimationFrame(frame);
     }
-    hero.start = function () { if (hero.running || !motionOn || !visible || document.hidden) return; hero.running = true; prev = null; raf = requestAnimationFrame(frame); };
+    hero.start = function () { if (hero.running || !motionOn || !visible || document.hidden) return; hero.running = true; prev = null; lastT = -1; raf = requestAnimationFrame(frame); };
     hero.stop = function () { hero.running = false; cancelAnimationFrame(raf); };
     hero.drawStatic = function () { lastT = -1; draw(t); };
-    // Playable keys: press (or drag across) the keyboard. Below middle C lights sand (left hand),
-    // middle C and up lights blue (right hand), with the app's brief brighter flash on press.
-    var pressed = {}, byPointer = {};
+
+    /* --- playing it: mouse, touch, and (in Play your own) the computer keyboard --- */
+    var pressed = {}, voices = {}, byId = {};
     function keyAt(px, py) {
       if (py < hitY || py > H) return null;
       for (var m in keyX) { var k = keyX[m]; if (k.b && px >= k.x && px <= k.x + k.w && py <= hitY + keyH * 0.62) return +m; }
       for (m in keyX) { k = keyX[m]; if (!k.b && px >= k.x && px < k.x + k.w) return +m; }
       return null;
     }
-    function local(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
-    function press(id, m) {
-      var old = byPointer[id];
+    function down(m) {
+      pressed[m] = (pressed[m] || 0) + 1;
+      if (pressed[m] > 1) return;
+      voices[m] = playNote(m, null, 0.5);
+      if (free && motionOn) trail.push({ m: m, t0: performance.now() / 1000, t1: null });
+    }
+    function upKey(m) {
+      if (!pressed[m]) return;
+      if (--pressed[m] > 0) return;
+      delete pressed[m];
+      if (voices[m]) { voices[m].stop(); delete voices[m]; }
+      var nowS = performance.now() / 1000;
+      trail.forEach(function (p) { if (p.m === m && p.t1 == null) p.t1 = nowS; });
+    }
+    function setKey(id, m) {
+      var old = byId[id];
       if (old === m) return;
-      if (old != null) delete pressed[old];
-      byPointer[id] = m;
-      if (m != null) pressed[m] = performance.now();
+      if (old != null) upKey(old);
+      if (m == null) delete byId[id]; else { byId[id] = m; down(m); }
       if (!hero.running) draw(t);
     }
+    function local(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
     cv.addEventListener('pointerdown', function (e) {
       var p = local(e), m = keyAt(p[0], p[1]);
       if (m == null) return;
+      if (soundOn && actx && actx.state === 'suspended') actx.resume();
       try { cv.setPointerCapture(e.pointerId); } catch (err) {}
-      press(e.pointerId, m);
+      setKey('p' + e.pointerId, m);
     });
     cv.addEventListener('pointermove', function (e) {
       var p = local(e);
       cv.style.cursor = keyAt(p[0], p[1]) != null ? 'pointer' : '';
-      if (e.pointerId in byPointer) press(e.pointerId, keyAt(p[0], p[1]));
+      if (('p' + e.pointerId) in byId) setKey('p' + e.pointerId, keyAt(p[0], p[1]));
     });
-    function release(e) { if (e.pointerId in byPointer) { press(e.pointerId, null); delete byPointer[e.pointerId]; } }
+    function release(e) { setKey('p' + e.pointerId, null); }
     cv.addEventListener('pointerup', release);
     cv.addEventListener('pointercancel', release);
-    hero.pressColor = function (m) {
-      if (!(m in pressed)) return null;
-      return { col: +m < 60 ? C.lh : C.rh, age: (performance.now() - pressed[m]) / 1000 };
-    };
+    var KEYS = { a: 60, w: 61, s: 62, e: 63, d: 64, f: 65, t: 66, g: 67, y: 68, h: 69, u: 70, j: 71, k: 72, o: 73, l: 74, p: 75, ';': 76 };
+    function typing(e) { var el = e.target; return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable); }
+    window.addEventListener('keydown', function (e) {
+      if (!free || e.repeat || e.metaKey || e.ctrlKey || e.altKey || typing(e) || !visible) return;
+      var m = KEYS[e.key.toLowerCase()]; if (m == null) return;
+      e.preventDefault(); setKey('k' + e.key.toLowerCase(), m);
+    });
+    window.addEventListener('keyup', function (e) { var k = 'k' + e.key.toLowerCase(); if (k in byId) setKey(k, null); });
+    window.addEventListener('blur', function () { Object.keys(byId).forEach(function (id) { setKey(id, null); }); });
+
+    /* --- the two buttons --- */
+    var sndBtn = document.getElementById('snd'), freeBtn = document.getElementById('free'), hint = document.getElementById('piano-hint');
+    var songHint = hint ? hint.innerHTML : '';
+    function setSound(on) {
+      soundOn = on;
+      if (on && audio() && actx.state === 'suspended') actx.resume();
+      if (!on) Object.keys(voices).forEach(function (m) { voices[m] && voices[m].stop(); });
+      sndBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      sndBtn.querySelector('span').textContent = on ? 'Sound on' : 'Sound off';
+      sndBtn.classList.toggle('on', on);
+    }
+    function setFree(on) {
+      free = on; trail = []; lastT = -1;
+      freeBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      freeBtn.querySelector('span').textContent = on ? 'Show the song' : 'Play your own';
+      freeBtn.classList.toggle('on', on);
+      var touch = window.matchMedia('(pointer: coarse)').matches;
+      if (hint) hint.innerHTML = on ? (touch ? 'Tap or slide across the keys' : 'Click or drag across the keys, or type <kbd>A</kbd>–<kbd>K</kbd>') : songHint;
+      if (!hero.running) draw(t);
+    }
+    if (sndBtn) sndBtn.addEventListener('click', function () { setSound(!soundOn); });
+    if (freeBtn) freeBtn.addEventListener('click', function () { setFree(!free); });
+
     draw(t);
     hero.start();
     if ('ResizeObserver' in window) new ResizeObserver(function () { layout(); draw(t); }).observe(cv);
@@ -934,7 +1045,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0075em; margin
       if (withIntro) {
         // The name rises in whole lines, so Outfit's kerning and the y/j descenders stay intact.
         gsap.from('#name', { y: 50, opacity: 0, filter: 'blur(12px)', duration: 1.3, ease: 'expo.out', delay: 0.1, clearProps: 'filter' });
-        gsap.from('.hero .eyebrow, .hero .lede, .hero-actions, .now-playing, .status', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.4 });
+        gsap.from('.hero .eyebrow, .hero .lede, .hero-actions, .piano-ctl', { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.4 });
       }
 
       gsap.to('.hero-copy', { yPercent: -16, opacity: 0.15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
