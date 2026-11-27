@@ -395,7 +395,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
         <button type="button" class="pill sm" id="free" aria-pressed="false" title="Hide the song and play the keys yourself">
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 4.5v6M10 4.5v11M13 4.5v6" stroke="currentColor" stroke-width="1.5"/></svg>
           <span>Play your own</span></button>
-        <span class="piano-hint"><i></i><span id="piano-hint">Ode to Joy · <span class="lh">left hand</span> and <span class="rh">right hand</span></span></span>
+        <span class="piano-hint"><i></i><span id="piano-hint">Minuet in G · <span class="lh">left hand</span> and <span class="rh">right hand</span></span></span>
       </div>
     </div>
   </header>
@@ -637,12 +637,12 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     if (!cv) return;
     var ctx = cv.getContext('2d');
     var C = { rh: '#66ADF2', lh: '#E8B86D', hit: '#3DDC97', label: 'rgba(10,18,32,0.92)' };
-    var BPM = 112, BEAT = 60 / BPM, LOOP = 32, LOOK = 3.0, SONG = LOOP * BEAT;
+    var BPM = 120, BPB = 3, BARS = 32, BEAT = 60 / BPM, LOOP = BPB * BARS, LOOK = 3.0, SONG = LOOP * BEAT;
     var NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
-    // Ode to Joy (public domain). [midi, startBeat, beats]
-    var mel = [[64,0,1],[64,1,1],[65,2,1],[67,3,1],[67,4,1],[65,5,1],[64,6,1],[62,7,1],[60,8,1],[60,9,1],[62,10,1],[64,11,1],[64,12,1.5],[62,13.5,.5],[62,14,2],
-               [64,16,1],[64,17,1],[65,18,1],[67,19,1],[67,20,1],[65,21,1],[64,22,1],[62,23,1],[60,24,1],[60,25,1],[62,26,1],[64,27,1],[62,28,1.5],[60,29.5,.5],[60,30,2]];
-    var bass = [[48,0,4],[55,4,4],[48,8,4],[55,12,4],[48,16,4],[55,20,4],[48,24,4],[55,28,2],[48,30,2]];
+    // Minuet in G major, BWV Anh. 114 (public domain), straight from PianoGlass's Assets/Songs/MinuetInG.mid:
+    // 3/4 at 120 BPM, 32 bars. [midi, startBeat, beats]
+    var mel = [[74,0,1],[67,1,0.5],[69,1.5,0.5],[71,2,0.5],[72,2.5,0.5],[74,3,1],[67,4,1],[67,5,1],[76,6,1],[72,7,0.5],[74,7.5,0.5],[76,8,0.5],[78,8.5,0.5],[79,9,1],[67,10,1],[67,11,1],[72,12,1],[74,13,0.5],[72,13.5,0.5],[71,14,0.5],[69,14.5,0.5],[71,15,1],[72,16,0.5],[71,16.5,0.5],[69,17,0.5],[67,17.5,0.5],[66,18,1],[67,19,0.5],[69,19.5,0.5],[71,20,0.5],[67,20.5,0.5],[71,21,1],[69,22,2],[74,24,1],[67,25,0.5],[69,25.5,0.5],[71,26,0.5],[72,26.5,0.5],[74,27,1],[67,28,1],[67,29,1],[76,30,1],[72,31,0.5],[74,31.5,0.5],[76,32,0.5],[78,32.5,0.5],[79,33,1],[67,34,1],[67,35,1],[72,36,1],[74,37,0.5],[72,37.5,0.5],[71,38,0.5],[69,38.5,0.5],[71,39,1],[72,40,0.5],[71,40.5,0.5],[69,41,0.5],[67,41.5,0.5],[69,42,1],[71,43,0.5],[69,43.5,0.5],[67,44,0.5],[66,44.5,0.5],[67,45,3],[83,48,1],[79,49,0.5],[81,49.5,0.5],[83,50,0.5],[79,50.5,0.5],[81,51,1],[74,52,0.5],[76,52.5,0.5],[78,53,0.5],[74,53.5,0.5],[79,54,1],[76,55,0.5],[78,55.5,0.5],[79,56,0.5],[74,56.5,0.5],[73,57,1],[71,58,0.5],[73,58.5,0.5],[69,59,1],[69,60,0.5],[71,60.5,0.5],[73,61,0.5],[74,61.5,0.5],[76,62,0.5],[78,62.5,0.5],[79,63,1],[78,64,1],[76,65,1],[78,66,1],[69,67,1],[73,68,1],[74,69,3],[74,72,1],[67,73,0.5],[66,73.5,0.5],[67,74,1],[76,75,1],[67,76,0.5],[66,76.5,0.5],[67,77,1],[74,78,1],[72,79,1],[71,80,1],[69,81,0.5],[67,81.5,0.5],[66,82,0.5],[67,82.5,0.5],[69,83,1],[62,84,0.5],[64,84.5,0.5],[66,85,0.5],[67,85.5,0.5],[69,86,0.5],[71,86.5,0.5],[72,87,1],[71,88,1],[69,89,1],[71,90,0.5],[74,90.5,0.5],[67,91,1],[66,92,1],[59,93,3],[62,93,3],[67,93,3]];
+    var bass = [[55,0,2],[59,0,2],[62,0,2],[57,2,1],[59,3,3],[60,6,3],[59,9,3],[57,12,3],[55,15,3],[62,18,1],[59,19,1],[55,20,1],[62,21,1],[50,22,0.5],[60,22.5,0.5],[59,23,0.5],[57,23.5,0.5],[59,24,2],[57,26,1],[55,27,1],[59,28,1],[55,29,1],[60,30,3],[59,33,1],[60,34,0.5],[59,34.5,0.5],[57,35,0.5],[55,35.5,0.5],[57,36,2],[54,38,1],[55,39,2],[59,41,1],[60,42,1],[62,43,1],[50,44,1],[55,45,2],[43,47,1],[55,48,3],[54,51,3],[52,54,1],[55,55,1],[52,56,1],[57,57,2],[45,59,1],[57,60,3],[59,63,1],[62,64,1],[61,65,1],[62,66,1],[54,67,1],[57,68,1],[62,69,1],[50,70,1],[60,71,1],[59,72,2],[62,73,2],[59,74,1],[60,75,2],[64,76,2],[60,77,1],[59,78,1],[57,79,1],[55,80,1],[62,81,2],[50,84,3],[54,86,1],[52,87,1],[55,88,1],[54,89,1],[55,90,1],[47,91,1],[50,92,1],[55,93,1],[50,94,1],[43,95,1]];
     var notes = mel.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'r' }; })
       .concat(bass.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'l' }; }));
     var BLACK = { 1: 1, 3: 1, 6: 1, 8: 1, 10: 1 };
@@ -727,7 +727,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
       if (!W || !H) return;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      lo = 48; hi = W < 700 ? 72 : 84; up = W < 700 ? 0 : 12;
+      lo = 43; hi = 84; up = 0;   // G2 to C6: the Minuet's whole range
       whites = 0; for (var m = lo; m <= hi; m++) if (!BLACK[m % 12]) whites++;
       kw = W / whites; keyH = Math.min(kw * 5.6, W < 700 ? 118 : 172); lip = Math.max(5, keyH * 0.06);
       hitY = H - keyH; cx = W / 2;
@@ -810,11 +810,11 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
       for (m = lo; m <= hi; m++) if (m % 12 === 0) { var a = P(keyX[m].x, 0), b = P(keyX[m].x, top); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
       // beat and bar lines; bar numbers in dark tags at the left end
       for (k = Math.ceil(t / BEAT); (k * BEAT - t) * pps < top; k++) {
-        var h = (k * BEAT - t) * pps, bar = k % 4 === 0, l = P(0, h), r = P(W, h);
+        var h = (k * BEAT - t) * pps, bar = k % BPB === 0, l = P(0, h), r = P(W, h);
         ctx.fillStyle = bar ? 'rgba(224,230,237,0.20)' : 'rgba(224,230,237,0.08)';
         ctx.fillRect(l[0], l[1] - 0.75, r[0] - l[0], 1.5);
         if (bar && !free) {
-          var s = l[2], num = (Math.floor(k / 4) % 8) + 1, tw = 20 * s, th = 16 * s;
+          var s = l[2], num = (Math.floor(k / BPB) % BARS) + 1, tw = 20 * s, th = 16 * s;
           ctx.fillStyle = 'rgba(8,8,10,0.92)'; rr(l[0] + 8 * s, l[1] - th / 2, tw, th, 4 * s); ctx.fill();
           ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1; ctx.stroke();
           ctx.fillStyle = '#fff'; ctx.font = '700 ' + Math.max(8, 11 * s) + 'px Outfit, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
