@@ -244,6 +244,16 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 .blog-text { display: grid; gap: 1rem; min-width: 0; }
 .blog-text p { color: #c3ccd6; font-weight: 300; max-width: 34rem; }
 .blog-text .meta { color: var(--muted); font-size: .92rem; }
+.bar9-signup { display: flex; flex-wrap: wrap; gap: .6rem; max-width: 30rem; margin-top: .4rem; }
+.bar9-signup input { flex: 1 1 14rem; min-width: 0; min-height: 2.9rem; padding: 0 .9rem; font: 400 1rem var(--font); color: var(--ink);
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.28); border-radius: 10px; }
+.bar9-signup input::placeholder { color: var(--faint); }
+.bar9-signup input:focus { outline: 2px solid var(--rh); outline-offset: 2px; border-color: transparent; }
+.bar9-signup .btn { border: 0; cursor: pointer; font-family: var(--font); min-height: 2.9rem; }
+.bar9-signup .btn:disabled { opacity: .6; cursor: wait; }
+.bar9-status { min-height: 1.4em; font-size: .92rem; color: var(--muted); }
+.bar9-status.error { color: var(--wrong); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .sheet { --paper: #f6f3ec; --sink: #24211d; --pgray: #6a645b; --pline: #aba394; --pencil: #a8381f;
   display: block; min-width: 0; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--sink);
   padding: 1.5rem 0 1.6rem; text-decoration: none; overflow: hidden; }
@@ -476,6 +486,12 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
         <p>Once a month I write about the piano: where it came from, how it works and how people learn to play it. The end of each issue is about what I changed in PianoGlass that month.</p>
         <p>The name comes from the app. After a song it tells you which bar to work on, like "Bar 9 needs work."</p>
         <p class="meta">A new issue on the first Sunday of each month</p>
+        <form class="bar9-signup" action="https://app.kit.com/forms/10249989/subscriptions" method="post" novalidate>
+          <label class="sr-only" for="bar9-email">Email address</label>
+          <input id="bar9-email" type="email" name="email_address" placeholder="you@example.com" autocomplete="email" required>
+          <button type="submit" class="btn">Get it by email</button>
+        </form>
+        <p class="bar9-status" id="bar9-status" role="status" aria-live="polite"></p>
         <p><a class="tlink" href="/bar9/">Read Bar 9 ↗</a></p>
       </div>
       <div class="sheet" id="bar9-sheet">
@@ -1244,6 +1260,28 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
 </script>
 
 <script>
+/* Bar 9 email signup: posts to Kit and answers inline (without JavaScript, Kit shows its own page). */
+(function () {
+  var form = document.querySelector('.bar9-signup'), status = document.getElementById('bar9-status');
+  if (!form || !window.fetch || !window.FormData) return;
+  var input = form.querySelector('input'), button = form.querySelector('button');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = input.value.trim();
+    status.classList.remove('error');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status.textContent = "That doesn't look like an email address."; status.classList.add('error'); input.focus(); return; }
+    button.disabled = true; status.textContent = 'Signing you up…';
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }, function () { return { ok: r.ok, d: {} }; }); })
+      .then(function (x) {
+        if (x.ok && x.d.status === 'success') { status.textContent = 'Almost done. Check ' + email + ' and click the link in the email from Ryan to confirm.'; form.reset(); }
+        else { var m = x.d.errors && x.d.errors.messages && x.d.errors.messages[0]; status.textContent = m ? m + '.' : 'Something went wrong. Try again in a minute.'; status.classList.add('error'); }
+      })
+      .catch(function () { status.textContent = "Couldn't reach the signup service. Try again in a minute."; status.classList.add('error'); })
+      .then(function () { button.disabled = false; });
+  });
+})();
+
 /* Bar 9: replace the placeholder issues on the blog sheet with the latest ones from the blog's RSS feed.
    The blog lives on this same site (/bar9/), so new issues show up here without editing this page. */
 (function () {
