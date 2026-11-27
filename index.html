@@ -1081,23 +1081,43 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
         var imgs = items.map(function (li) { return li.querySelector('img'); });
         // Scroll position picks the build; each change then plays its whole wipe on its own clock,
         // so stopping anywhere always leaves one full image on screen.
-        var showing = 0, tr = null;
+        // Each change wipes in on top of whatever is still moving underneath, so fast scrolling
+        // overlaps the wipes (two or three builds mid-transition at once) instead of cutting them off.
+        // Scrolling back to a build that is still showing underneath reverses the wipe above it.
+        var HIDE_R = 'inset(0% 0% 0% 100%)', HIDE_L = 'inset(0% 100% 0% 0%)', OPEN = 'inset(0% 0% 0% 0%)';
+        var showing = 0, zc = n, z = [], open = [], from = [];
+        function hideBelow(j) {
+          items.forEach(function (li, k) {
+            if (k === j || z[k] > z[j]) return;
+            gsap.killTweensOf(li); gsap.killTweensOf(imgs[k]);
+            gsap.set(li, { clipPath: HIDE_R }); gsap.set(imgs[k], { clearProps: 'transform,opacity' });
+            open[k] = false;
+          });
+        }
+        function wipeIn(j, fwd) {
+          z[j] = ++zc; open[j] = false; from[j] = fwd ? HIDE_R : HIDE_L;
+          gsap.set(items[j], { zIndex: z[j] });
+          gsap.fromTo(items[j], { clipPath: from[j] }, { clipPath: OPEN, duration: 0.85, ease: 'power3.inOut', overwrite: true,
+            onComplete: function () { open[j] = true; hideBelow(j); } });
+          gsap.fromTo(imgs[j], { scale: 1.08, xPercent: fwd ? 3 : -3, opacity: 1 }, { scale: 1, xPercent: 0, duration: 1, ease: 'power3.out', overwrite: true });
+        }
         function showFrame(j) {
           if (j === showing) return;
-          if (tr) tr.progress(1);
           var i = showing, fwd = j > i; showing = j;
-          items.forEach(function (li, k) {
-            if (k !== i && k !== j) gsap.set(li, { zIndex: 1, clipPath: 'inset(0% 0% 0% 100%)' });
-          });
-          gsap.set(items[i], { zIndex: 2 }); gsap.set(items[j], { zIndex: 3 });
-          tr = gsap.timeline({ onComplete: function () {
-              gsap.set(items[i], { clipPath: 'inset(0% 0% 0% 100%)', zIndex: 1 });
-              gsap.set(imgs[i], { clearProps: 'transform,opacity' });
-              tr = null;
-            } })
-            .fromTo(items[j], { clipPath: fwd ? 'inset(0% 0% 0% 100%)' : 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.75, ease: 'power3.inOut' }, 0)
-            .fromTo(imgs[j], { scale: 1.08, xPercent: fwd ? 3 : -3, opacity: 1 }, { scale: 1, xPercent: 0, duration: 0.9, ease: 'power3.out' }, 0)
-            .to(imgs[i], { scale: 0.96, opacity: 0.4, duration: 0.75, ease: 'power3.inOut' }, 0);
+          if (open[j] && z[j] < z[i] && !fwd) {
+            // j is still fully drawn underneath: slide i back out the way it came
+            open[i] = false;
+            gsap.to(items[i], { clipPath: from[i] || HIDE_R, duration: 0.7, ease: 'power3.inOut', overwrite: true });
+            gsap.to(imgs[j], { scale: 1, xPercent: 0, opacity: 1, duration: 0.7, ease: 'power3.out', overwrite: true });
+          } else if (!open[j] && z[j] > z[i]) {
+            // j was sliding back out on top: carry it back in from where it is, no jump
+            gsap.to(items[j], { clipPath: OPEN, duration: 0.7, ease: 'power3.inOut', overwrite: true,
+              onComplete: function () { open[j] = true; hideBelow(j); } });
+            gsap.to(imgs[i], { scale: 0.96, opacity: 0.4, duration: 0.8, ease: 'power3.inOut', overwrite: true });
+          } else {
+            wipeIn(j, fwd);
+            gsap.to(imgs[i], { scale: 0.96, opacity: 0.4, duration: 0.8, ease: 'power3.inOut', overwrite: true });
+          }
           setActive(j);
         }
         // Smooth slow-down instead of a pin: the milestones wipe in while the page crawls.
@@ -1105,8 +1125,11 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
           sec: document.getElementById('history'), inner: document.querySelector('.history-pin'),
           hold: function (vh) { return (n - 1) * vh * 0.2; },
           add: function () {
-            showing = 0;
-            items.forEach(function (li, k) { gsap.set(li, { zIndex: k === 0 ? 3 : 1, clipPath: k === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 0% 100%)' }); });
+            showing = 0; zc = n;
+            items.forEach(function (li, k) {
+              z[k] = k === 0 ? n : 0; open[k] = k === 0; from[k] = HIDE_R;
+              gsap.set(li, { zIndex: z[k], clipPath: k === 0 ? OPEN : HIDE_R });
+            });
           },
           onUpdate: function (time, a, b) {
             var step = b / (n - 1);
@@ -1114,7 +1137,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
             gsap.set(fill, { scaleY: Math.max(0, Math.min(1, (time - a) / b)) });
           },
           reset: function () {
-            if (tr) { tr.kill(); tr = null; }
+            gsap.killTweensOf(items); gsap.killTweensOf(imgs);
             gsap.set(items, { clearProps: 'clipPath,zIndex' }); gsap.set(imgs, { clearProps: 'transform,opacity' });
           }
         });
