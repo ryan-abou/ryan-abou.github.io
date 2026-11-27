@@ -1002,9 +1002,9 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     z.build = function () {
       z.clear();
       var vh = window.innerHeight;
-      var a = 0.5 * vh, c = 0.5 * vh, b = Math.max(0.6 * vh, o.hold(vh));
+      var a = 0.4 * vh, c = 0.4 * vh, b = Math.max(0.5 * vh, o.hold(vh));
       var Hh = o.inner.offsetHeight;
-      var v = 0.06, K = 1 - v;                  // same crawl speed in every slow zone
+      var v = 0.1, K = 1 - v;                  // same crawl speed in every slow zone
       var dA = K * a / 2, dB = K * b, dC = K * c / 2, total = a + b + c;
       var mid = Math.max(-24, (vh - Hh) / 2);  // the section's top on screen at the middle of the hold
       var y0 = mid + a + b / 2 - (dA + dB / 2); // ...and where it sits as the slow-down begins
@@ -1103,7 +1103,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
         // Smooth slow-down instead of a pin: the milestones wipe in while the page crawls.
         var zone = slowZone({
           sec: document.getElementById('history'), inner: document.querySelector('.history-pin'),
-          hold: function (vh) { return (n - 1) * vh * 0.3; },
+          hold: function (vh) { return (n - 1) * vh * 0.2; },
           add: function () {
             showing = 0;
             items.forEach(function (li, k) { gsap.set(li, { zIndex: k === 0 ? 3 : 1, clipPath: k === 0 ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 0% 100%)' }); });
@@ -1146,7 +1146,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
         hold: function (vh) {
           var cs = getComputedStyle(inner);
           dist = Math.max(0, track.scrollWidth - (inner.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)));
-          return Math.max(0.9 * vh, dist * 1.25);
+          return Math.max(0.6 * vh, dist * 0.85);
         },
         add: function (tl, a, b, c) { tl.to(track, { x: -dist, ease: 'sine.inOut', duration: a * 0.5 + b + c * 0.5 }, a * 0.5); },
         reset: function () { gsap.set(track, { clearProps: 'transform' }); }
