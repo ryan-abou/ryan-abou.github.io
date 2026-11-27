@@ -665,8 +665,21 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
       dry.connect(comp); wet.connect(comp); comp.connect(actx.destination);
       noiseBuf = actx.createBuffer(1, Math.floor(actx.sampleRate * 0.05), actx.sampleRate);
       var nd = noiseBuf.getChannelData(0); for (i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * (1 - i / nd.length);
+      fadeWithScroll(true);
       return actx;
     }
+    // The further the first screen scrolls away, the quieter it gets, down to silence once it's gone.
+    var heroEl = cv.closest('.hero');
+    function fadeWithScroll(now) {
+      if (!actx || !master) return;
+      var r = heroEl.getBoundingClientRect();
+      var f = Math.max(0, Math.min(1, r.bottom / Math.max(1, r.height)));
+      var level = 0.55 * f * f;
+      if (now) master.gain.setValueAtTime(level, actx.currentTime);
+      else master.gain.setTargetAtTime(level, actx.currentTime, 0.06);
+    }
+    window.addEventListener('scroll', function () { fadeWithScroll(false); }, { passive: true });
+    window.addEventListener('resize', function () { fadeWithScroll(false); });
     function playNote(m, dur, vel) {
       if (!soundOn || !audio()) return null;
       var a = actx, t0 = a.currentTime + 0.005, f = 440 * Math.pow(2, (m - 69) / 12);
