@@ -732,10 +732,10 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
       ctx.fillStyle = g; ctx.fillRect(0, hitY, W, 12);
     }
 
-    var lastT = -1;
+    var lastT = null;   // song time of the last frame; null = no previous frame (the clock starts below zero)
     // sound: play each note as it reaches the keys
     function soundTick(t) {
-      if (lastT < 0 || !soundOn) return;
+      if (lastT === null || !soundOn) return;
       for (var i = 0; i < notes.length; i++) {
         var s0 = notes[i].s;
         if (t >= lastT ? (s0 > lastT && s0 <= t) : (s0 > lastT || s0 <= t))
@@ -754,7 +754,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
         var h = (k * BEAT - t) * pps, bar = k % BPB === 0, l = P(0, h), r = P(W, h);
         ctx.fillStyle = bar ? 'rgba(224,230,237,0.20)' : 'rgba(224,230,237,0.08)';
         ctx.fillRect(l[0], l[1] - 0.75, r[0] - l[0], 1.5);
-        if (bar && !free) {
+        if (bar && !free && k >= 0) {   // no bar numbers during the lead-in
           var s = l[2], num = (Math.floor(k / BPB) % BARS) + 1, tw = 20 * s, th = 16 * s;
           ctx.fillStyle = 'rgba(8,8,10,0.92)'; rr(l[0] + 8 * s, l[1] - th / 2, tw, th, 4 * s); ctx.fill();
           ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1; ctx.stroke();
@@ -796,7 +796,9 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
 
     /* --- the clock --- */
     layout();
-    var t = 0.6, prev = null, visible = true, raf = 0;
+    // Like starting a song in PianoGlass: a couple of seconds of empty highway, then the first notes
+    // come in at the top and take LOOK seconds to reach the keys. Only on page load, not on every loop.
+    var LEAD_IN = 2, t = -(LOOK + LEAD_IN), prev = null, visible = true, raf = 0;
     function frame(ts) {
       if (!hero.running) return;
       if (prev != null && !free) t = (t + Math.min((ts - prev) / 1000, 0.05)) % SONG;
@@ -806,9 +808,9 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
       else { hero.stop(); return; }
       raf = requestAnimationFrame(frame);
     }
-    hero.start = function () { if (hero.running || !motionOn || document.hidden || !(visible || audible())) return; hero.running = true; prev = null; lastT = -1; raf = requestAnimationFrame(frame); };
+    hero.start = function () { if (hero.running || !motionOn || document.hidden || !(visible || audible())) return; hero.running = true; prev = null; lastT = null; raf = requestAnimationFrame(frame); };
     hero.stop = function () { hero.running = false; cancelAnimationFrame(raf); };
-    hero.drawStatic = function () { lastT = -1; draw(t); };
+    hero.drawStatic = function () { if (t < 0) t = 0.6; lastT = null; draw(t); };   // a still picture should show notes, not the empty lead-in
 
     /* --- playing it: mouse, touch, and (in Play your own) the computer keyboard --- */
     var pressed = {}, voices = {}, byId = {};
@@ -883,7 +885,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     // off; leaving Play your own puts the sound back the way it was before.
     var soundBefore = null;
     function setFree(on) {
-      free = on; trail = []; lastT = -1;
+      free = on; trail = []; lastT = null;
       if (on && actx) fadeOutBus();
       if (on) { soundBefore = soundOn; if (!soundOn) setSound(true); }
       else if (soundBefore !== null) { if (soundOn !== soundBefore) setSound(soundBefore); soundBefore = null; }
@@ -903,6 +905,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
       try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
     }
 
+    if (!motionOn) t = 0.6;   // Motion off: skip the lead-in so the still picture shows the song
     draw(t);
     hero.start();
     if ('ResizeObserver' in window) new ResizeObserver(function () { layout(); draw(t); }).observe(cv);
