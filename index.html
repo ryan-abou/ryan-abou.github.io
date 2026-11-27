@@ -8,7 +8,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&family=Libre+Caslon+Display&display=swap">
 <style>
 /* Layout: one plain dark page in one typeface. PianoGlass is the only designed object on it:
    the playable highway at the top and the app panel of demos keep the app's own colors and glass.
@@ -237,6 +237,32 @@ input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius
 /* science fair */
 .fair p { max-width: 42rem; color: #c3ccd6; font-weight: 300; margin-top: 1rem; }
 
+/* Bar 9: like the screenshots of the other projects, the blog is shown in its own look,
+   a small live sheet of its manuscript paper with the latest issues read from its RSS feed. */
+.blog { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); align-items: center; }
+@media (min-width: 920px) { .blog { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 3.5rem; } }
+.blog-text { display: grid; gap: 1rem; min-width: 0; }
+.blog-text p { color: #c3ccd6; font-weight: 300; max-width: 34rem; }
+.blog-text .meta { color: var(--muted); font-size: .92rem; }
+.sheet { --paper: #f6f3ec; --sink: #24211d; --pgray: #6a645b; --pline: #aba394; --pencil: #a8381f;
+  display: block; min-width: 0; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); color: var(--sink);
+  padding: 1.5rem 0 1.6rem; text-decoration: none; overflow: hidden; }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0 1.6rem; }
+.sheet-logo { font: 400 2rem/1.1 "Libre Caslon Display", Georgia, serif; }
+.sheet-logo .c { position: relative; display: inline-block; margin-left: .3em; padding: 0 .2em; }
+.sheet-logo svg { position: absolute; left: 50%; top: 50%; width: 1.45em; height: 1.55em; transform: translate(-50%, -52%); overflow: visible; }
+.sheet-tag { font: italic .85rem Georgia, serif; color: var(--pgray); }
+.sheet-staff { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 1rem 0 .4rem; }
+.sheet-staff span { height: 19px; border-right: 1px solid var(--sink); background: repeating-linear-gradient(to bottom, var(--pline) 0 1px, transparent 1px 4.5px); }
+.sheet-list { list-style: none; margin: 0; padding: 0 1.6rem; }
+.sheet-list li { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .6rem; padding: .85rem 0; border-bottom: 1px solid #dad3c6; }
+.sheet-list li:last-child { border-bottom: 0; }
+.sheet-list .n { font: italic .9rem Georgia, serif; color: var(--pgray); padding-top: .2rem; }
+.sheet-list .t { font: 400 1.3rem/1.2 "Libre Caslon Display", Georgia, serif; color: var(--sink); }
+.sheet-list a.t { text-decoration: none; }
+.sheet-list a.t:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.sheet-list .d { display: block; margin-top: .25rem; font: italic .85rem Georgia, serif; color: var(--pgray); }
+
 /* school projects */
 .sites { padding-bottom: 1rem; }
 .sites-inner { display: grid; gap: 2rem; }
@@ -285,6 +311,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     <a class="me" href="#top">Ryan Abourjeili</a>
     <div class="links">
       <a href="#pianoglass">PianoGlass</a>
+      <a href="#blog">Blog</a>
       <a href="#sites">Projects</a>
       <a class="hide-sm" href="#contact">Contact</a>
       <button type="button" id="motion-toggle" aria-pressed="true" title="Turn page animation on or off"><i></i><span>Motion</span></button>
@@ -440,6 +467,30 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
   <section class="wrap sec fair" aria-labelledby="fair-title">
     <h2 id="fair-title">Science fair</h2>
     <p>PianoGlass is entered in the Technology Enhances the Arts category. The question is whether an app that listens to what a beginner plays and corrects them in real time helps them learn a passage more accurately than a standard falling-notes app. Next is a study with five beginner pianists.</p>
+  </section>
+
+  <section class="wrap sec" id="blog" aria-labelledby="blog-title">
+    <div class="blog">
+      <div class="blog-text">
+        <h2 id="blog-title">Bar 9</h2>
+        <p>Once a month I write about the piano: where it came from, how it works and how people learn to play it. The end of each issue is about what I changed in PianoGlass that month.</p>
+        <p>The name comes from the app. After a song it tells you which bar to work on, like "Bar 9 needs work."</p>
+        <p class="meta">A new issue on the first Sunday of each month</p>
+        <p><a class="tlink" href="/bar9/">Read Bar 9 ↗</a></p>
+      </div>
+      <div class="sheet" id="bar9-sheet">
+        <div class="sheet-head">
+          <a class="sheet-logo" href="/bar9/" style="color: inherit; text-decoration: none">Bar<span class="c">9<svg aria-hidden="true" viewBox="0 0 48 52" fill="none" stroke="#a8381f" stroke-width="1.8" stroke-linecap="round"><path d="M31 5 C13 2 2 15 4 29 C6 45 25 51 37 44 C49 37 47 13 32 6 C27 4 21 5 16 9"/></svg></span></a>
+          <span class="sheet-tag" id="bar9-tag">coming in December</span>
+        </div>
+        <div class="sheet-staff" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <!-- Shown until the blog has published issues; replaced by the latest ones from /bar9/rss.xml. -->
+        <ol class="sheet-list" id="bar9-list">
+          <li><span class="n">1</span><span><span class="t">The instrument named for what it could do</span><span class="d">Sunday, December 6</span></span></li>
+          <li><span class="n">2</span><span><span class="t">Maelzel's metronome and Beethoven's impossible tempos</span><span class="d">Planned for January</span></span></li>
+        </ol>
+      </div>
+    </div>
   </section>
 
   <section class="sec sites" id="sites" aria-labelledby="sites-title">
@@ -1189,6 +1240,41 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     try { navigator.clipboard.writeText(addr.textContent.trim()).then(function () { done('Copied'); }, selectIt); }
     catch (e) { selectIt(); }
   });
+})();
+</script>
+
+<script>
+/* Bar 9: replace the placeholder issues on the blog sheet with the latest ones from the blog's RSS feed.
+   The blog lives on this same site (/bar9/), so new issues show up here without editing this page. */
+(function () {
+  var list = document.getElementById('bar9-list'), tag = document.getElementById('bar9-tag');
+  if (!list || !window.fetch || !window.DOMParser) return;
+  fetch('/bar9/rss.xml', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(function (xml) {
+      var doc = new DOMParser().parseFromString(xml, 'application/xml');
+      var items = Array.prototype.slice.call(doc.querySelectorAll('item'), 0, 3);
+      if (!items.length) return;                                   // nothing published yet: keep the placeholder
+      list.textContent = '';
+      items.forEach(function (it) {
+        var title = (it.querySelector('title') || {}).textContent || '';
+        var link = (it.querySelector('link') || {}).textContent || '/bar9/';
+        var date = new Date((it.querySelector('pubDate') || {}).textContent || '');
+        var m = title.match(/^No\. (\d+): ([\s\S]*)$/);
+        if (!/^https:\/\/ryan-abou\.github\.io\/bar9\//.test(link)) link = '/bar9/';
+        var li = document.createElement('li');
+        var n = document.createElement('span'); n.className = 'n'; n.textContent = m ? m[1] : '';
+        var body = document.createElement('span');
+        var a = document.createElement('a'); a.className = 't'; a.href = link; a.textContent = m ? m[2] : title;
+        var d = document.createElement('span'); d.className = 'd';
+        d.textContent = isNaN(date) ? '' : date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+        body.appendChild(a); body.appendChild(d);
+        li.appendChild(n); li.appendChild(body);
+        list.appendChild(li);
+      });
+      if (tag) tag.textContent = 'latest issues';
+    })
+    .catch(function () {});
 })();
 </script>
 
