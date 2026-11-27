@@ -685,8 +685,18 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     function audible() { return soundOn && !free && curLevel > 0.0005; }
     window.addEventListener('scroll', function () { fadeWithScroll(false); }, { passive: true });
     window.addEventListener('resize', function () { fadeWithScroll(false); });
+    var bus = null;
+    function newBus() { bus = actx.createGain(); bus.gain.value = 1; bus.connect(master); }
+    function fadeOutBus() {
+      if (!bus) return;
+      var b = bus, now = actx.currentTime; bus = null;
+      b.gain.cancelScheduledValues(now); b.gain.setValueAtTime(b.gain.value, now);
+      b.gain.setTargetAtTime(0, now, 0.2);                      // about a second to silence
+      setTimeout(function () { try { b.disconnect(); } catch (e) {} }, 1600);
+    }
     function playNote(m, dur, vel) {
       if (!soundOn || !audio()) return null;
+      if (!bus) newBus();
       var a = actx, t0 = a.currentTime + 0.005, f = 440 * Math.pow(2, (m - 69) / 12);
       var env = a.createGain(); env.gain.setValueAtTime(0, t0);
       env.gain.linearRampToValueAtTime(vel, t0 + 0.005);
@@ -694,12 +704,12 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
       env.gain.setTargetAtTime(0.0001, t0 + 0.12, 1.1 * Math.pow(261.6 / f, 0.45));   // long ring, shorter up high
       var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.4;
       lp.frequency.setValueAtTime(Math.min(12000, f * 14), t0); lp.frequency.setTargetAtTime(f * 3.2, t0, 0.35);
-      lp.connect(env); env.connect(master);
+      lp.connect(env); env.connect(bus);
       var parts = [[1, 'sine', 1], [2, 'sine', 0.34], [3, 'sine', 0.12], [1.002, 'triangle', 0.16], [4, 'sine', 0.05]], oscs = [];
       parts.forEach(function (p) { var o = a.createOscillator(), g = a.createGain(); o.type = p[1]; o.frequency.value = f * p[0]; g.gain.value = p[2]; o.connect(g); g.connect(lp); o.start(t0); oscs.push(o); });
       var nz = a.createBufferSource(), bp = a.createBiquadFilter(), ng = a.createGain();
       nz.buffer = noiseBuf; bp.type = 'bandpass'; bp.frequency.value = Math.min(6000, f * 6); bp.Q.value = 0.8; ng.gain.value = vel * 0.18;
-      nz.connect(bp); bp.connect(ng); ng.connect(master); nz.start(t0);
+      nz.connect(bp); bp.connect(ng); ng.connect(bus); nz.start(t0);
       var stopped = false;
       function stop(at) {
         if (stopped) return; stopped = true;
@@ -919,8 +929,11 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     var songHint = hint ? hint.innerHTML : '';
     function setSound(on) {
       soundOn = on;
-      if (on && audio() && actx.state === 'suspended') actx.resume();
-      if (!on) Object.keys(voices).forEach(function (m) { voices[m] && voices[m].stop(); });
+      if (on && audio()) { if (actx.state === 'suspended') actx.resume(); if (!bus) newBus(); }
+      if (!on && actx) {
+        fadeOutBus();   // everything ringing fades away instead of finishing its notes
+        Object.keys(voices).forEach(function (m) { if (voices[m]) voices[m].stop(actx.currentTime + 1.2); delete voices[m]; });
+      }
       sndBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
       sndBtn.querySelector('span').textContent = on ? 'Sound on' : 'Sound off';
       sndBtn.classList.toggle('on', on);
