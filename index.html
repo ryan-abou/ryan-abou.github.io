@@ -798,7 +798,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     layout();
     // Like starting a song in PianoGlass: a couple of seconds of empty highway, then the first notes
     // come in at the top and take LOOK seconds to reach the keys. Only on page load, not on every loop.
-    var LEAD_IN = 2, t = -(LOOK + LEAD_IN), prev = null, visible = true, raf = 0;
+    var LEAD_IN = 0.5, t = -(LOOK + LEAD_IN), prev = null, visible = true, raf = 0;
     function frame(ts) {
       if (!hero.running) return;
       if (prev != null && !free) t = (t + Math.min((ts - prev) / 1000, 0.05)) % SONG;
