@@ -670,14 +670,19 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     }
     // The further the first screen scrolls away, the quieter it gets, down to silence once it's gone.
     var heroEl = cv.closest('.hero');
+    var curLevel = 0.55;
     function fadeWithScroll(now) {
-      if (!actx || !master) return;
-      var r = heroEl.getBoundingClientRect();
-      var f = Math.max(0, Math.min(1, r.bottom / Math.max(1, r.height)));
-      var level = 0.55 * f * f;
-      if (now) master.gain.setValueAtTime(level, actx.currentTime);
-      else master.gain.setTargetAtTime(level, actx.currentTime, 0.06);
+      var r = heroEl.getBoundingClientRect(), hh = Math.max(1, r.height);
+      var gone = Math.max(0, hh - r.bottom);                 // how far the first screen has scrolled away
+      var f = Math.max(0, Math.min(1, 1 - gone / (3 * hh)));  // silent after three screen-heights
+      curLevel = 0.55 * f * f;
+      if (actx && master) {
+        if (now) master.gain.setValueAtTime(curLevel, actx.currentTime);
+        else master.gain.setTargetAtTime(curLevel, actx.currentTime, 0.06);
+      }
+      if (audible() && hero.start && !hero.running) hero.start();
     }
+    function audible() { return soundOn && !free && curLevel > 0.0005; }
     window.addEventListener('scroll', function () { fadeWithScroll(false); }, { passive: true });
     window.addEventListener('resize', function () { fadeWithScroll(false); });
     function playNote(m, dur, vel) {
@@ -777,6 +782,15 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     }
 
     var lastT = -1;
+    // sound: play each note as it reaches the keys
+    function soundTick(t) {
+      if (lastT < 0 || !soundOn) return;
+      for (var i = 0; i < notes.length; i++) {
+        var s0 = notes[i].s;
+        if (t >= lastT ? (s0 > lastT && s0 <= t) : (s0 > lastT || s0 <= t))
+          playNote(notes[i].h === 'r' ? notes[i].m + up : notes[i].m, notes[i].d * 0.92, notes[i].h === 'r' ? 0.5 : 0.36);
+      }
+    }
     function draw(t) {
       if (!W) return;
       ctx.clearRect(0, 0, W, H);
@@ -810,12 +824,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
             slab(nx, nw, Math.max(0, (st - t) * pps), (en - t) * pps - gap, t >= st ? C.hit : hand, t >= st ? null : NAMES[n.m % 12], top);
           }
         }
-        // sound: play each note as it reaches the keys
-        if (lastT >= 0 && soundOn) for (i = 0; i < notes.length; i++) {
-          var s0 = notes[i].s;
-          if (t >= lastT ? (s0 > lastT && s0 <= t) : (s0 > lastT || s0 <= t))
-            playNote(notes[i].h === 'r' ? notes[i].m + up : notes[i].m, notes[i].d * 0.92, notes[i].h === 'r' ? 0.5 : 0.36);
-        }
+        soundTick(t);
       } else {
         // your own playing: each press rises up the highway in its hand's colour
         var nowS = performance.now() / 1000, rise = pps * 0.55;
@@ -840,9 +849,13 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     function frame(ts) {
       if (!hero.running) return;
       if (prev != null && !free) t = (t + Math.min((ts - prev) / 1000, 0.05)) % SONG;
-      prev = ts; draw(t); raf = requestAnimationFrame(frame);
+      prev = ts;
+      if (visible) draw(t);
+      else if (audible()) { soundTick(t); lastT = t; }   // off screen: keep the music going, skip the drawing
+      else { hero.stop(); return; }
+      raf = requestAnimationFrame(frame);
     }
-    hero.start = function () { if (hero.running || !motionOn || !visible || document.hidden) return; hero.running = true; prev = null; lastT = -1; raf = requestAnimationFrame(frame); };
+    hero.start = function () { if (hero.running || !motionOn || document.hidden || !(visible || audible())) return; hero.running = true; prev = null; lastT = -1; raf = requestAnimationFrame(frame); };
     hero.stop = function () { hero.running = false; cancelAnimationFrame(raf); };
     hero.drawStatic = function () { lastT = -1; draw(t); };
 
@@ -927,7 +940,7 @@ footer .sign .l2 { display: block; color: #6f7a87; margin-left: 0.0425em; margin
     draw(t);
     hero.start();
     if ('ResizeObserver' in window) new ResizeObserver(function () { layout(); draw(t); }).observe(cv);
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; visible ? hero.start() : hero.stop(); }).observe(cv);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) hero.start(); else if (!audible()) hero.stop(); }).observe(cv);
     document.addEventListener('visibilitychange', function () { document.hidden ? hero.stop() : hero.start(); });
   })();
 
