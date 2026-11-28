@@ -200,7 +200,7 @@ html.lenis, html.lenis body { height: auto; }
 .sec { padding-top: clamp(4.5rem, 9vw, 7.5rem); }
 .sec h2, .history h2 { font-family: var(--display); font-size: var(--t-xl); font-weight: 600; letter-spacing: -0.012em; line-height: 1.02; font-variation-settings: "opsz" 72; }
 @media (max-width: 700px) {
-  .sec h2, .history h2, .contact h2, .site h3, .row h3, .counter b, .frames time { font-variation-settings: "opsz" 24; }
+  .sec h2, .history h2, .contact h2, .site h3, .row h3, .counter b, .frames time { font-variation-settings: "opsz" 12; }
 }
 .sec .intro, .history .intro { color: var(--ink-2); max-width: 36rem; margin-top: .75rem; font-size: 1.15rem; }
 .small { font-size: var(--t-sm); color: var(--gray); }
@@ -1594,10 +1594,12 @@ function shake(field) {
     var vv = window.visualViewport;
     function nudge() {
       var r = el.getBoundingClientRect(), bottom = vv ? vv.offsetTop + vv.height : window.innerHeight, over = r.bottom + 16 - bottom;
-      if (over > 0) window.scrollBy({ top: over, behavior: 'smooth' });
+      if (over > 0) window.scrollBy(0, over);
     }
+    // The keyboard slides up over a few hundred ms, so check on every resize while it does, and once more after.
     nudge();
-    if (vv) { vv.addEventListener('resize', nudge, { once: true }); setTimeout(function () { vv.removeEventListener('resize', nudge); }, 1500); }
+    if (vv) { vv.addEventListener('resize', nudge); setTimeout(function () { vv.removeEventListener('resize', nudge); }, 1500); }
+    setTimeout(nudge, 900);
   }
   input.addEventListener('input', function () { if (field.classList.contains('is-error')) { field.classList.remove('is-error'); line.classList.remove('error'); } });
   form.addEventListener('submit', function (e) {
