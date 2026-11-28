@@ -621,21 +621,38 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     var W, H, dpr, lo, hi, up = 0, whites, kw, keyH, lip, hitY, D, pps, cx, keyX = {};
     var free = false, trail = [];
 
-    /* --- sound: a small synthesized piano (no files), off until the visitor turns it on --- */
+    /* --- sound: a recorded grand piano, off until the visitor turns it on --- */
     var AC = window.AudioContext || window.webkitAudioContext, actx = null, master = null, noiseBuf = null, soundOn = false;
     var LEVEL = 0.25;   // overall volume
     // Recorded grand piano (Salamander Grand Piano by Alexander Holm, CC BY 3.0), one sample every three
     // semitones; each note plays the nearest sample, re-pitched by at most a semitone and a half.
     var SAMPLES = { 42: 'Fs2', 45: 'A2', 48: 'C3', 51: 'Ds3', 54: 'Fs3', 57: 'A3', 60: 'C4', 63: 'Ds4', 66: 'Fs4', 69: 'A4', 72: 'C5', 75: 'Ds5', 78: 'Fs5', 81: 'A5', 84: 'C6' };
-    var bufs = {}, samplesAsked = false;
-    function loadSamples() {
-      if (samplesAsked || !actx || !window.fetch) return; samplesAsked = true;
+    // The files start downloading before the sound is turned on (once the page is idle, or when the pointer
+    // reaches the buttons) and are decoded once there's an audio context. Until they've all arrived, notes
+    // stay silent rather than using the synth below, so the first notes never come out of a different piano.
+    // The synth is only for when the files can't load.
+    var bufs = {}, raw = null, samplesAsked = false, samplesSettled = false;
+    function fetchSamples() {
+      if (raw || !window.fetch) return;
+      raw = {};
       Object.keys(SAMPLES).forEach(function (m) {
-        fetch('audio/' + SAMPLES[m] + '.mp3')
-          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        raw[m] = fetch('audio/' + SAMPLES[m] + '.mp3')
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
+        raw[m].catch(function () {});
+      });
+    }
+    function loadSamples() {
+      if (samplesAsked || !actx) return; samplesAsked = true;
+      fetchSamples();
+      if (!raw) { samplesSettled = true; return; }
+      var left = Object.keys(SAMPLES).length;
+      setTimeout(function () { samplesSettled = true; }, 8000);           // a stuck file shouldn't mean silence for good
+      Object.keys(SAMPLES).forEach(function (m) {
+        raw[m]
           .then(function (ab) { return new Promise(function (res, rej) { actx.decodeAudioData(ab, res, rej); }); })
           .then(function (b) { bufs[m] = b; })
-          .catch(function () {});
+          .catch(function () {})
+          .then(function () { if (--left === 0) samplesSettled = true; });
       });
     }
     function sampleVoice(m, dur, vel) {
@@ -704,6 +721,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
     function playNote(m, dur, vel) {
       if (!soundOn || !audio()) return null;
       if (!bus) newBus();
+      if (!samplesSettled) return null;                                   // the piano is still loading
       var sv = sampleVoice(m, dur, vel); if (sv) return sv;
       var a = actx, t0 = a.currentTime + 0.005, f = 440 * Math.pow(2, (m - 69) / 12);
       var env = a.createGain(); env.gain.setValueAtTime(0, t0);
@@ -964,6 +982,16 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--line);
       if (!hero.running) draw(t);
     }
     if (sndBtn) sndBtn.addEventListener('click', function () { setSound(!soundOn); });
+    // Get the piano files early so they're usually ready by the time the sound goes on.
+    [sndBtn, freeBtn].forEach(function (b) {
+      if (!b) return;
+      ['pointerenter', 'focus', 'touchstart'].forEach(function (ev) { b.addEventListener(ev, fetchSamples, { once: true, passive: true }); });
+    });
+    (function () {
+      var c = navigator.connection; if (c && c.saveData) return;          // don't spend someone's data saver on it
+      function later() { (window.requestIdleCallback || function (f) { setTimeout(f, 1500); })(fetchSamples); }
+      if (document.readyState === 'complete') later(); else window.addEventListener('load', later);
+    })();
     if (freeBtn) freeBtn.addEventListener('click', function () { freeBtn.classList.remove('nudge'); setFree(!free); });
 
     // Coming from the blog's "Play the falling notes in your browser" link: make Play your own pulse until it's pressed.
