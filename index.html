@@ -716,15 +716,38 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     if (!cv) return;
     var ctx = cv.getContext('2d');
     var C = { rh: '#66ADF2', lh: '#E8B86D', hit: '#3DDC97', label: 'rgba(10,18,32,0.92)' };
-    var BPM = 120, BPB = 3, BARS = 32, BEAT = 60 / BPM, LOOP = BPB * BARS, LOOK = 3.0, SONG = LOOP * BEAT;
-    var NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
     // Minuet in G major, BWV Anh. 114 (public domain), straight from PianoGlass's Assets/Songs/MinuetInG.mid:
     // 3/4 at 120 BPM, 32 bars. [midi, startBeat, beats]
     var mel = [[74,0,1],[67,1,0.5],[69,1.5,0.5],[71,2,0.5],[72,2.5,0.5],[74,3,1],[67,4,1],[67,5,1],[76,6,1],[72,7,0.5],[74,7.5,0.5],[76,8,0.5],[78,8.5,0.5],[79,9,1],[67,10,1],[67,11,1],[72,12,1],[74,13,0.5],[72,13.5,0.5],[71,14,0.5],[69,14.5,0.5],[71,15,1],[72,16,0.5],[71,16.5,0.5],[69,17,0.5],[67,17.5,0.5],[66,18,1],[67,19,0.5],[69,19.5,0.5],[71,20,0.5],[67,20.5,0.5],[71,21,1],[69,22,2],[74,24,1],[67,25,0.5],[69,25.5,0.5],[71,26,0.5],[72,26.5,0.5],[74,27,1],[67,28,1],[67,29,1],[76,30,1],[72,31,0.5],[74,31.5,0.5],[76,32,0.5],[78,32.5,0.5],[79,33,1],[67,34,1],[67,35,1],[72,36,1],[74,37,0.5],[72,37.5,0.5],[71,38,0.5],[69,38.5,0.5],[71,39,1],[72,40,0.5],[71,40.5,0.5],[69,41,0.5],[67,41.5,0.5],[69,42,1],[71,43,0.5],[69,43.5,0.5],[67,44,0.5],[66,44.5,0.5],[67,45,3],[83,48,1],[79,49,0.5],[81,49.5,0.5],[83,50,0.5],[79,50.5,0.5],[81,51,1],[74,52,0.5],[76,52.5,0.5],[78,53,0.5],[74,53.5,0.5],[79,54,1],[76,55,0.5],[78,55.5,0.5],[79,56,0.5],[74,56.5,0.5],[73,57,1],[71,58,0.5],[73,58.5,0.5],[69,59,1],[69,60,0.5],[71,60.5,0.5],[73,61,0.5],[74,61.5,0.5],[76,62,0.5],[78,62.5,0.5],[79,63,1],[78,64,1],[76,65,1],[78,66,1],[69,67,1],[73,68,1],[74,69,3],[74,72,1],[67,73,0.5],[66,73.5,0.5],[67,74,1],[76,75,1],[67,76,0.5],[66,76.5,0.5],[67,77,1],[74,78,1],[72,79,1],[71,80,1],[69,81,0.5],[67,81.5,0.5],[66,82,0.5],[67,82.5,0.5],[69,83,1],[62,84,0.5],[64,84.5,0.5],[66,85,0.5],[67,85.5,0.5],[69,86,0.5],[71,86.5,0.5],[72,87,1],[71,88,1],[69,89,1],[71,90,0.5],[74,90.5,0.5],[67,91,1],[66,92,1],[59,93,3],[62,93,3],[67,93,3]];
     var bass = [[55,0,2],[59,0,2],[62,0,2],[57,2,1],[59,3,3],[60,6,3],[59,9,3],[57,12,3],[55,15,3],[62,18,1],[59,19,1],[55,20,1],[62,21,1],[50,22,0.5],[60,22.5,0.5],[59,23,0.5],[57,23.5,0.5],[59,24,2],[57,26,1],[55,27,1],[59,28,1],[55,29,1],[60,30,3],[59,33,1],[60,34,0.5],[59,34.5,0.5],[57,35,0.5],[55,35.5,0.5],[57,36,2],[54,38,1],[55,39,2],[59,41,1],[60,42,1],[62,43,1],[50,44,1],[55,45,2],[43,47,1],[55,48,3],[54,51,3],[52,54,1],[55,55,1],[52,56,1],[57,57,2],[45,59,1],[57,60,3],[59,63,1],[62,64,1],[61,65,1],[62,66,1],[54,67,1],[57,68,1],[62,69,1],[50,70,1],[60,71,1],[59,72,2],[62,73,2],[59,74,1],[60,75,2],[64,76,2],[60,77,1],[59,78,1],[57,79,1],[55,80,1],[62,81,2],[50,84,3],[54,86,1],[52,87,1],[55,88,1],[54,89,1],[55,90,1],[47,91,1],[50,92,1],[55,93,1],[50,94,1],[43,95,1]];
-    var notes = mel.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'r' }; })
-      .concat(bass.map(function (n) { return { m: n[0], s: n[1] * BEAT, d: n[2] * BEAT, h: 'l' }; }));
-    hero.notes = notes; hero.song = SONG; hero.beat = BEAT;   // the roll below punches the same song
+    function toNotes(mel, bass, beat) {
+      return mel.map(function (n) { return { m: n[0], s: n[1] * beat, d: n[2] * beat, h: 'r' }; })
+        .concat(bass.map(function (n) { return { m: n[0], s: n[1] * beat, d: n[2] * beat, h: 'l' }; }));
+    }
+    // The roll down the margin (wide screens only) always punches the Minuet.
+    hero.notes = toNotes(mel, bass, 0.5); hero.song = 96 * 0.5; hero.beat = 0.5;
+
+    // Phones get Twinkle, Twinkle, Little Star on two octaves (C3 to C5): an easy song and fewer, bigger keys.
+    // Wider screens get the Minuet on G2 to C6. Decided once, when the page opens.
+    var small = !!(window.matchMedia && matchMedia('(max-width: 700px)').matches);
+    var BPM = 120, BPB = 3, BARS = 32, KEY_LO = 43, KEY_HI = 84;
+    if (small) {
+      BPM = 100; BPB = 4; BARS = 12; KEY_LO = 48; KEY_HI = 72;
+      // Six two-bar phrases (public domain tune). Right hand: quarter notes ending on a half note.
+      // Left hand: the chords' roots, C, F and G, in whole and half notes.
+      var TW = [[60, 60, 67, 67, 69, 69, 67], [65, 65, 64, 64, 62, 62, 60], [67, 67, 65, 65, 64, 64, 62]];
+      var TW_LH = [[[48, 0, 4], [53, 4, 2], [48, 6, 2]], [[53, 0, 2], [48, 2, 2], [55, 4, 2], [48, 6, 2]], [[48, 0, 2], [53, 2, 2], [48, 4, 2], [55, 6, 2]]];
+      mel = []; bass = [];
+      [0, 1, 2, 2, 0, 1].forEach(function (p, i) {
+        TW[p].forEach(function (m, j) { mel.push([m, i * 8 + j, j === 6 ? 2 : 1]); });
+        TW_LH[p].forEach(function (n) { bass.push([n[0], i * 8 + n[1], n[2]]); });
+      });
+      var hintEl = document.getElementById('piano-hint');
+      if (hintEl) hintEl.innerHTML = 'Twinkle, Twinkle, Little Star, <span class="lh">left hand</span> and <span class="rh">right hand</span>';
+    }
+    var BEAT = 60 / BPM, LOOP = BPB * BARS, LOOK = 3.0, SONG = LOOP * BEAT;
+    var NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+    var notes = toNotes(mel, bass, BEAT);
     var BLACK = { 1: 1, 3: 1, 6: 1, 8: 1, 10: 1 };
     var W, H, dpr, lo, hi, up = 0, whites, kw, keyH, lip, hitY, D, pps, cx, keyX = {};
     var free = false, trail = [];
@@ -861,7 +884,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       if (!W || !H) return;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      lo = 43; hi = 84; up = 0;   // G2 to C6: the Minuet's whole range
+      lo = KEY_LO; hi = KEY_HI; up = 0;   // the song's whole range: G2 to C6 for the Minuet, C3 to C5 for Twinkle
       whites = 0; for (var m = lo; m <= hi; m++) if (!BLACK[m % 12]) whites++;
       kw = W / whites; keyH = Math.min(kw * 5.6, W < 700 ? 118 : 172); lip = Math.max(5, keyH * 0.06);
       hitY = H - keyH; cx = W / 2;
@@ -1065,7 +1088,13 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     var songHint = hint ? hint.innerHTML : '';
     function setSound(on) {
       soundOn = on;
-      if (on && audio()) { if (actx.state === 'suspended') actx.resume(); if (!bus) newBus(); }
+      // iPhones mute web audio when the ringer switch is on silent unless the page says it's media playback.
+      if (on) { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} }
+      if (on && audio()) {
+        if (actx.state === 'suspended') actx.resume();
+        if (!bus) newBus();
+        try { var u = actx.createBufferSource(); u.buffer = actx.createBuffer(1, 1, actx.sampleRate); u.connect(actx.destination); u.start(0); } catch (e) {}   // older Safari only unlocks sound on a node started during the tap
+      }
       if (!on && actx) {
         fadeOutBus();   // everything ringing fades away instead of finishing its notes
         Object.keys(voices).forEach(function (m) { if (voices[m]) voices[m].stop(actx.currentTime + 0.6); delete voices[m]; });
