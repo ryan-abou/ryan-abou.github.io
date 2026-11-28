@@ -756,7 +756,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
 
     /* --- sound: a recorded grand piano, off until the visitor turns it on --- */
     var AC = window.AudioContext || window.webkitAudioContext, actx = null, master = null, noiseBuf = null, soundOn = false;
-    var LEVEL = 0.25;   // overall volume
+    var LEVEL = small ? 1 : 0.25;   // overall volume: phone speakers need it all
     // Recorded grand piano (Salamander Grand Piano by Alexander Holm, CC BY 3.0), one sample every three
     // semitones; each note plays the nearest sample, re-pitched by at most a semitone and a half.
     var SAMPLES = { 42: 'Fs2', 45: 'A2', 48: 'C3', 51: 'Ds3', 54: 'Fs3', 57: 'A3', 60: 'C4', 63: 'Ds4', 66: 'Fs4', 69: 'A4', 72: 'C5', 75: 'Ds5', 78: 'Fs5', 81: 'A5', 84: 'C6' };
@@ -765,16 +765,13 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     // stay silent rather than using the synth below, so the first notes never come out of a different piano.
     // The synth is only for when the files can't load.
     var bufs = {}, raw = null, samplesAsked = false, samplesSettled = false;
-    // ?debug=sound shows a readout of the sound system (temporary, for tracking down phone audio problems).
-    var dbg = /[?&]debug=sound\b/.test(location.search) ? { sample: 0, synth: 0, errors: [] } : null;
-    function dbgErr(where, e) { if (dbg) dbg.errors.push(where + ': ' + ((e && (e.name + ' ' + e.message)) || e)); }
     function fetchSamples() {
       if (raw || !window.fetch) return;
       raw = {};
       Object.keys(SAMPLES).forEach(function (m) {
         raw[m] = fetch('audio/' + SAMPLES[m] + '.mp3')
           .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
-        raw[m].catch(function (e) { dbgErr('fetch ' + SAMPLES[m], e); });
+        raw[m].catch(function () {});
       });
     }
     function loadSamples() {
@@ -787,7 +784,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
         raw[m]
           .then(function (ab) { return new Promise(function (res, rej) { actx.decodeAudioData(ab, res, rej); }); })
           .then(function (b) { bufs[m] = b; })
-          .catch(function (e) { dbgErr('decode ' + SAMPLES[m], e); })
+          .catch(function () {})
           .then(function () { if (--left === 0) samplesSettled = true; });
       });
     }
@@ -858,8 +855,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       if (!soundOn || !audio()) return null;
       if (!bus) newBus();
       if (!samplesSettled) return null;                                   // the piano is still loading
-      var sv = sampleVoice(m, dur, vel); if (sv) { if (dbg) dbg.sample++; return sv; }
-      if (dbg) dbg.synth++;
+      var sv = sampleVoice(m, dur, vel); if (sv) return sv;
       var a = actx, t0 = a.currentTime + 0.005, f = 440 * Math.pow(2, (m - 69) / 12);
       var env = a.createGain(); env.gain.setValueAtTime(0, t0);
       env.gain.linearRampToValueAtTime(vel, t0 + 0.005);
@@ -1097,7 +1093,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     var blockedEl = document.getElementById('snd-blocked'), blockedT = 0;
     function wake() {
       if (!soundOn || !actx || actx.state === 'running') return;
-      try { var pr = actx.resume(); if (pr && pr.catch) pr.catch(function (e) { dbgErr('resume', e); }); } catch (e) { dbgErr('resume', e); }
+      try { var pr = actx.resume(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {}
       clearTimeout(blockedT);
       blockedT = setTimeout(showBlocked, 900);
     }
@@ -1167,31 +1163,6 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       setTimeout(function () { sndBtn.classList.remove('nudge-brief'); }, 5000);   // three 1.6s pulses, then done
     }
 
-    if (dbg) {
-      var box = document.createElement('div');
-      box.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:9999;background:#111;color:#9f9;font:12px/1.4 monospace;padding:8px;border:1px solid #555;border-radius:6px;white-space:pre-wrap;word-break:break-word';
-      var out = document.createElement('div'), beep = document.createElement('button');
-      beep.textContent = 'Test beep'; beep.style.cssText = 'margin-top:6px;padding:6px 12px;font:13px sans-serif';
-      beep.addEventListener('click', function () {
-        try {
-          if (!actx) audio();
-          if (actx.state !== 'running') actx.resume();
-          var o = actx.createOscillator(), g = actx.createGain(); g.gain.value = 0.2;
-          o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + 0.4);
-        } catch (e) { dbgErr('beep', e); }
-      });
-      box.appendChild(out); box.appendChild(beep); document.body.appendChild(box);
-      setInterval(function () {
-        out.textContent = [
-          'audio: ' + (AC ? (actx ? actx.state + ' @' + actx.sampleRate + 'Hz, t=' + actx.currentTime.toFixed(1) : 'not created yet') : 'NO WEB AUDIO'),
-          'sound on: ' + soundOn + '  free: ' + free + '  level: ' + curLevel.toFixed(3) + '  visible: ' + visible + '  running: ' + hero.running,
-          'samples: ' + Object.keys(bufs).length + '/15 decoded, fetch started: ' + !!raw + ', settled: ' + samplesSettled,
-          'notes played: ' + dbg.sample + ' piano, ' + dbg.synth + ' synth',
-          'errors: ' + (dbg.errors.length ? dbg.errors.slice(-4).join(' | ') : 'none'),
-          navigator.userAgent
-        ].join('\n');
-      }, 300);
-    }
 
     if (!motionOn) t = 0.6;   // Motion off: skip the lead-in so the still picture shows the song
     draw(t);
