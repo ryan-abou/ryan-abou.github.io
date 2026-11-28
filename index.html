@@ -1124,15 +1124,31 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       if (!soundOn || !actx || actx.state === 'running') return;
       try { var pr = actx.resume(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {}
       clearTimeout(blockedT);
-      blockedT = setTimeout(showBlocked, 900);
+      blockedT = setTimeout(showBlocked, 3000);   // a phone can take a second or two to start its audio, so don't cry wolf
     }
     function showBlocked() {
       if (!blockedEl) return;
       var blocked = soundOn && actx && actx.state !== 'running';
-      if (blocked) blockedEl.textContent = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent)
-        ? 'Firefox is blocking the sound. Tap the icon left of the address, find Autoplay, choose "Allow audio and video", then reload the page.'
-        : 'Your browser is blocking the sound on this page. Check its sound or autoplay setting for this site.';
+      if (blocked) blockedEl.textContent = blockedHelp();
       blockedEl.hidden = !blocked;
+    }
+    // What to do when the browser won't start the sound. Another tap fixes it almost everywhere; the settings
+    // paths come from each browser's own help pages (checked November 2026).
+    function blockedHelp() {
+      var ua = navigator.userAgent, tap = matchMedia('(pointer: coarse)').matches ? 'Tap' : 'Click';
+      var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+      var first = ' hasn’t let the sound start. ' + tap + ' a piano key to try again.';
+      if (ios) return 'Your browser' + first + ' If it stays quiet, check that your volume is up.';
+      if (/Firefox\//.test(ua)) return 'Firefox' + first + (/Android/.test(ua)
+        ? ' If it stays quiet, open Firefox’s Settings, then Site settings, then Autoplay, choose “Allow audio and video,” and reload this page.'
+        : ' If it stays quiet, open Settings, then Privacy & Security, click Settings next to Autoplay under Permissions, choose “Allow Audio and Video,” and reload.');
+      if (/SamsungBrowser/.test(ua)) return 'Samsung Internet' + first + ' If it stays quiet, check that your media volume is up.';
+      if (/Edg\//.test(ua)) return 'Edge' + first + ' If it stays quiet, open Settings, then Cookies and site permissions, then Media autoplay, choose Allow, and reload.';
+      if (/Chrome\//.test(ua) && !/OPR\//.test(ua)) return 'Chrome' + first + (/Android/.test(ua)
+        ? ' If it stays quiet, tap the three dots, then Site controls, then Permissions, and make sure Sound is allowed.'
+        : ' If it stays quiet, click the icon left of the address, open Site settings, set Sound to Allow, and reload.');
+      if (/Safari\//.test(ua)) return 'Safari' + first + ' If it stays quiet, open Safari’s Settings, then Websites, then Auto-Play, set this site to “Allow All Auto-Play,” and reload.';
+      return 'Your browser' + first + ' If it stays quiet, look for a sound or autoplay setting for this site in your browser’s settings.';
     }
     ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, wake, { capture: true, passive: true }); });
     function setSound(on) {
@@ -1140,7 +1156,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       // iPhones mute web audio when the ringer switch is on silent unless the page says it's media playback.
       if (on) { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} }
       if (on && audio()) {
-        if (!actx.onstatechange) actx.onstatechange = showBlocked;
+        if (!actx.onstatechange) actx.onstatechange = function () { if (actx.state === 'running' && blockedEl) blockedEl.hidden = true; };   // only the timer after a tap shows the note
         wake();
         if (!bus) newBus();
         try { var u = actx.createBufferSource(); u.buffer = actx.createBuffer(1, 1, actx.sampleRate); u.connect(actx.destination); u.start(0); } catch (e) {}   // older Safari only unlocks sound on a node started during the tap
