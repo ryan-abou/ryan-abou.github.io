@@ -142,6 +142,9 @@ html.lenis, html.lenis body { height: auto; }
 .pill.on { background: var(--on); border-color: rgba(160,205,250,.8); }
 /* A visitor from the blog: Play your own breathes with a blue ring until they press it. */
 .pill.nudge { border-color: rgba(160,205,250,.9); animation: nudge 1.6s ease-in-out infinite; }
+/* Every visitor: Sound breathes three times when the page opens, so people know the piano can play. */
+.pill.nudge-brief { border-color: rgba(160,205,250,.9); animation: nudge 1.6s ease-in-out 3; }
+[data-motion="off"] .pill.nudge-brief { animation: none; border-color: rgba(255,255,255,.38); }
 @keyframes nudge {
   0%, 100% { box-shadow: 0 0 0 0 rgba(102,173,242,.7); background: var(--btn); }
   60% { box-shadow: 0 0 0 14px rgba(102,173,242,0); background: rgba(102,173,242,.48); }
@@ -1086,7 +1089,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
       if (hint) hint.innerHTML = on ? (touch ? 'Tap or slide across the keys' : 'Click or drag across the keys, or type <kbd>A</kbd>–<kbd>K</kbd>') : songHint;
       if (!hero.running) draw(t);
     }
-    if (sndBtn) sndBtn.addEventListener('click', function () { setSound(!soundOn); });
+    if (sndBtn) sndBtn.addEventListener('click', function () { sndBtn.classList.remove('nudge-brief'); setSound(!soundOn); });
     // Get the piano files early so they're usually ready by the time the sound goes on.
     [sndBtn, freeBtn].forEach(function (b) {
       if (!b) return;
@@ -1103,6 +1106,10 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     if (freeBtn && /[?&]from=bar9\b/.test(location.search)) {
       freeBtn.classList.add('nudge');
       try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {}
+    } else if (sndBtn) {
+      // Everyone else: Sound pulses for a few seconds (Play your own already pulses for blog visitors).
+      sndBtn.classList.add('nudge-brief');
+      setTimeout(function () { sndBtn.classList.remove('nudge-brief'); }, 5000);   // three 1.6s pulses, then done
     }
 
     if (!motionOn) t = 0.6;   // Motion off: skip the lead-in so the still picture shows the song
