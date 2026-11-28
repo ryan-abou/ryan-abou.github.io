@@ -152,6 +152,7 @@ html.lenis, html.lenis body { height: auto; }
 .pill svg { width: 1rem; height: 1rem; }
 .pill .wave, .pill.on .x { opacity: 0; transition: opacity var(--duration-quick); }
 .pill.on .wave { opacity: 1; }
+.snd-blocked { flex-basis: 100%; order: 3; margin: 0; font-size: .85rem; color: var(--app-ink); }
 .piano-hint { font-size: .85rem; color: var(--app-muted); display: flex; align-items: center; }
 .piano-hint > i { display: none; }
 .piano-hint .rh { color: var(--rh); } .piano-hint .lh { color: var(--lh); }
@@ -450,6 +451,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
         <button type="button" class="pill" id="free" aria-pressed="false" title="Hide the song and play the keys yourself">
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 4.5v6M10 4.5v11M13 4.5v6" stroke="currentColor" stroke-width="1.5"/></svg>
           <span>Play your own</span></button>
+        <p class="snd-blocked" id="snd-blocked" role="status" hidden></p>
         <span class="piano-hint"><i></i><span id="piano-hint">Minuet in G, <span class="lh">left hand</span> and <span class="rh">right hand</span></span></span>
       </div>
     </div>
@@ -1065,7 +1067,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     cv.addEventListener('pointerdown', function (e) {
       var p = local(e), m = keyAt(p[0], p[1]);
       if (m == null) return;
-      if (soundOn && actx && actx.state === 'suspended') actx.resume();
+      wake();
       try { cv.setPointerCapture(e.pointerId); } catch (err) {}
       setKey('p' + e.pointerId, m);
     });
@@ -1090,12 +1092,31 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
     /* --- the two buttons --- */
     var sndBtn = document.getElementById('snd'), freeBtn = document.getElementById('free'), hint = document.getElementById('piano-hint');
     var songHint = hint ? hint.innerHTML : '';
+    // Start the audio if the browser has it paused. Browsers only allow that during a tap or click, and
+    // some (Firefox for Android, depending on its Autoplay setting) refuse even then, so every tap tries again.
+    var blockedEl = document.getElementById('snd-blocked'), blockedT = 0;
+    function wake() {
+      if (!soundOn || !actx || actx.state === 'running') return;
+      try { var pr = actx.resume(); if (pr && pr.catch) pr.catch(function (e) { dbgErr('resume', e); }); } catch (e) { dbgErr('resume', e); }
+      clearTimeout(blockedT);
+      blockedT = setTimeout(showBlocked, 900);
+    }
+    function showBlocked() {
+      if (!blockedEl) return;
+      var blocked = soundOn && actx && actx.state !== 'running';
+      if (blocked) blockedEl.textContent = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent)
+        ? 'Firefox is blocking the sound. Tap the icon left of the address, find Autoplay, choose "Allow audio and video", then reload the page.'
+        : 'Your browser is blocking the sound on this page. Check its sound or autoplay setting for this site.';
+      blockedEl.hidden = !blocked;
+    }
+    ['pointerup', 'touchend', 'click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, wake, { capture: true, passive: true }); });
     function setSound(on) {
       soundOn = on;
       // iPhones mute web audio when the ringer switch is on silent unless the page says it's media playback.
       if (on) { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} }
       if (on && audio()) {
-        if (actx.state === 'suspended') actx.resume();
+        if (!actx.onstatechange) actx.onstatechange = showBlocked;
+        wake();
         if (!bus) newBus();
         try { var u = actx.createBufferSource(); u.buffer = actx.createBuffer(1, 1, actx.sampleRate); u.connect(actx.destination); u.start(0); } catch (e) {}   // older Safari only unlocks sound on a node started during the tap
       }
@@ -1103,6 +1124,7 @@ footer { margin-top: clamp(5rem, 10vw, 8rem); border-top: 1px solid var(--rule);
         fadeOutBus();   // everything ringing fades away instead of finishing its notes
         Object.keys(voices).forEach(function (m) { if (voices[m]) voices[m].stop(actx.currentTime + 0.6); delete voices[m]; });
       }
+      if (!on) showBlocked();
       sndBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
       sndBtn.querySelector('span').textContent = on ? 'Sound on' : 'Sound off';
       sndBtn.classList.toggle('on', on);
